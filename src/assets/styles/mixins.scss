@@ -1,0 +1,10 @@
+@mixin vertical-center {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin block {
+  width: 200px;
+  height: 200px;
+}

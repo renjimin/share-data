@@ -1,0 +1,55 @@
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+  background: url('../images/bg.png') no-repeat;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  outline: none;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+ul,li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+#app,
+.app-wrapper {
+  overflow: hidden;
+  position: absolute;
+  height: 100%;
+  width: 90%;
+  margin: 20px 5% 0 5%;;
+  color: #333;
+  font-size: 14px;
+  line-height: 1;
+}
+.app-main_wrap > div {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}

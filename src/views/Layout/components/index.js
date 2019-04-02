@@ -1,0 +1,6 @@
+export { default as Sidebar } from './Sidebar/Sidebar.vue'
+export { default as Header } from './Header'
+export { default as Navbar } from './Navbar'
+export { default as TagsNav } from './TagsNav'
+export { default as AppMain } from './AppMain'
+export { default as Search } from '@/components/search/search.vue'
