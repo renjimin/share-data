@@ -15,3 +15,9 @@ export function getTreeNumber(params) {
 export function categoryDetail(params) {
   return request.post('/datashare/b/userResourcePrivilege/categorydetail',params);
 }
+
+// 获取数据
+export function categoryKey(params) {
+  return request.get('/datashare/b/keyword/categorykey',params);
+}
+

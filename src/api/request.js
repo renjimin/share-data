@@ -61,7 +61,7 @@ ajax.interceptors.response.use(response => {
   }, 100)
   const { data } = response
   if (whiteList.includes(data.code)) {
-    return response.data.data
+    return response.data
   } else {
     let errorMsg = data.message;
     if (reLogin.includes(data.code) && flag) {

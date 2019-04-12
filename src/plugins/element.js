@@ -43,6 +43,11 @@ import {
   TimePicker,
   //other
   Card, 
+  Scrollbar,
+
+  Header,
+  //popover
+  Popover
 } from 'element-ui';
 
 Vue.use(Loading);
@@ -77,7 +82,11 @@ Vue.use(TabPane);
 Vue.use(DatePicker);
 Vue.use(TimeSelect);
 Vue.use(TimePicker);
-Vue.use(Card)
+Vue.use(Card);
+Vue.use(Scrollbar);
+Vue.use(Header);
+Vue.use(Popover);
+
 
 
 Vue.prototype.$confirm = MessageBox.confirm;

@@ -12,15 +12,16 @@
 .app-wrapper {
   user-select: none;
   display: flex; // 左边菜单
-  .el-menu {
-    box-shadow:0 2px 12px 0 rgba(0,0,0,.1);
-    overflow-y: scroll;
-    overflow-x: hidden;
+  ul:first-child{
+    box-shadow:0 2px 12px 0 rgba(0,0,0,.4);
+    border-radius: 7px;
+  }
+  .el-menu { 
     &:not(.el-menu--collapse) {
       width: 220px;
     }
     &>div{
-      border-radius: 5px;
+      // border-radius: 5px;
     }
     border-right: none;
     &>div>.el-menu-item {
@@ -28,6 +29,7 @@
     } // 子菜单的背景颜色
     .el-menu-item,
     .nest-menu .el-submenu__title {
+
       transition: all 0.3s;
       // background-color: #ECF1F9 !important; // 鼠标移上去的背景颜色
       // color: #00ACAC !important;
@@ -37,7 +39,7 @@
       } //   选中的背景颜色
       // &.is-active {
       //   background-color: #001528 !important;
-      // }
+      // }    
     } // 动画 bug
     &.el-menu--collapse {
       .el-submenu__icon-arrow.el-icon-arrow-right {
@@ -50,6 +52,7 @@
         visibility: hidden;
         display: inline-block;
       }
+
     }
   } 
   .app-scroll-wrap {
@@ -257,3 +260,9 @@
 .scroll-list ul::-webkit-scrollbar{
   display: none;
 }
+.number-badge{
+  position: absolute;
+  right: 36px;
+  margin-top: 0; 
+  color: #BABEC5;       
+}  

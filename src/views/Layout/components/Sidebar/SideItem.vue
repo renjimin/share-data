@@ -1,21 +1,23 @@
 <template>
   <div>
-    <el-menu>
-      <el-submenu  v-for="item in alldata" :key="item.id" :index="item.id+item.name">   
-          <template slot="title"><img src="/images/index/content.png">{{item.name}}</template>
-          <NavItem :navList="item.children"></NavItem>
-      </el-submenu>      
-        <!-- <el-menu-item-group v-for="item in alldata" :key="item.id">
-          <template slot="title">{{item.name}}</template>
-          <NavItem :navList="item.children" v-if="item.children"></NavItem>
-        </el-menu-item-group> -->
-
-    </el-menu>
-
+    <el-scrollbar style="height:100%">
+      <el-menu>
+        <el-submenu  v-for="item in alldata" :key="item.id" :index="item.id+item.name" class="level-nav">   
+              <template slot="title">
+                <router-link :to="{path:'categorization', query:{code:item.id}}" >
+                  <div @click="gotoDetail(item)">
+                    <img src="/images/index/content.png">{{item.name}}<span class="number-badge">{{item.count}}</span>
+                  </div>
+                </router-link>
+              </template>
+            <NavItem :navList="item.children"></NavItem>
+        </el-submenu>
+      </el-menu>
+    </el-scrollbar>
   </div>
 </template>
 <script>
-import {getAllTree, getTreeNumber } from '@/api/index/index'
+import {getAllTree, getTreeNumber,categoryDetail } from '@/api/index/index'
 import NavItem from './Item';
 export default {
   name: "sideItem",
@@ -35,11 +37,8 @@ export default {
   methods: {
     async initData(){
       let resall = await getAllTree();
-      this.alldata =  this.treeData(resall);   
-      console.log(this.alldata)
+      this.alldata =  this.treeData(resall.data);   
       let params = 0;
-      // let res = await getTree(params);
-      // this.firstNav =  res;
     },
     async firstClick(index,item) {
       let res = await getTree(item.id);
@@ -62,6 +61,18 @@ export default {
       });
       return tree     //返回树形数据
     }, 
+    async gotoDetail(item){
+      let data = {
+          "code": item.Id,
+          "nowPage": 1,
+          "pageSize": 10,              
+      }
+      let resdetail  =  await categoryDetail(data);
+      const {code } = resdetail;
+      if (code === ! 0) {
+          this.$router.push({name:'routes',params:{pk_refinfo:'test',value:'test1'}});
+      }    
+    }
   }
 };
 </script>
