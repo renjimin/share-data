@@ -4,7 +4,7 @@
     :collapse="sideStatus"
     :default-active="$route.path"
   >
-  <side-item :routes="$router.options.routes" />  
+  <side-item :routes="$router.options.routes" />
   </el-menu>
 </template>
 <script>
@@ -17,7 +17,7 @@ export default {
     SideItem
   },
   created(){
-    console.log(this.$router.options.routes)
+
   },
   computed: {
     ...mapGetters(["sideStatus"])

@@ -21,3 +21,7 @@ export function categoryKey(params) {
   return request.get('/datashare/b/keyword/categorykey',params);
 }
 
+// 获取数据
+export function searcher(params) {
+  return request.get('/datashare/b/keyword/categorykey/searcher',{params});
+}

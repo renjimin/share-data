@@ -25,7 +25,6 @@ export default {
   props:['navList'],
   methods:{
       async getCateDetail(item){
-          console.log('item',item.children)
           if (!item.children) {
             let data = {
                 "code": item.Id,
@@ -38,9 +37,6 @@ export default {
                 this.$router.push({name:'routes',params:{pk_refinfo:'test',value:'test1'}});
             }
           }
-        //   if (!item.children){
-        //       let res  =  await getTreeNumber();
-        //   }
 
       }
   },

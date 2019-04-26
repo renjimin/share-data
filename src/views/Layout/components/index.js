@@ -1,5 +1,5 @@
 export { default as Sidebar } from './Sidebar/Sidebar.vue'
-export { default as Header } from './Header'
+export { default as Header } from '@/components/header/Header'
 export { default as Navbar } from './Navbar'
 export { default as TagsNav } from './TagsNav'
 export { default as AppMain } from './AppMain'

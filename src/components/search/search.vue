@@ -1,11 +1,12 @@
 <template>
   <div class="seach-data">
     <el-input placeholder="请输入关键字进行搜索" v-model="input5" class="input-with-select">
-        <el-button slot="append" icon="el-icon-search" round></el-button>
+      <i slot="prefix" class="el-input__icon el-icon-search" @click="search"></i>
     </el-input>
   </div>
 </template>
 <script>
+import {searcher} from '@/api/index/index'
 export default {
   name: "Empty",
   props: {
@@ -16,12 +17,26 @@ export default {
   },
   data() {
     return {
-      input5:''
+      input5:'',
+      pageSize:4,
     }
-  },  
+  },
+  methods:{
+    async search(){
+      let data ={
+        code:'',
+        scale:'',
+        region:'',
+        redLine:'',
+        pageSize:this.pageSize,
+        nowPage:1
+      }
+      let res = await searcher(data);
+    }
+  }
 };
 </script>
-<style lang='scss' scoped>
+<style lang='scss'>
 .seach-data {
     padding:10px;
     color:#fff;
@@ -31,17 +46,13 @@ export default {
 
     // transform:translate(0%,-50%);
     .input-with-select{
-      border-radius: 5px;
+      border-radius: 50px;
     }
-}
-
-.zui-no-data__img {
-  width: 70px;
-}
-
-.zui-no-data__text {
-  color: #b5b5b5;
-  font-size: 14px;
-  margin-top: 15px;
+    .el-input__inner{
+      border-radius: 50px;
+    }
+    .el-input__prefix{
+      left: calc(100% - 30px);
+    }
 }
 </style>

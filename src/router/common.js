@@ -31,6 +31,41 @@ export default [
     ),
   },
   {
+    path: '/details',
+    name: 'details',
+    component: () => import(
+      '_views/Details/index.vue'
+    ),
+  },
+  {
+    path: '/serverdetails',
+    name: 'serverdetails',
+    component: () => import(
+      '_views/Details/serverDetail.vue'
+    ),
+  },
+  {
+    path: '/govDetail',
+    name: 'govDetail',
+    component: () => import(
+      '_views/Details/govDetail.vue'
+    ),
+  },
+  {
+    path: '/dynamicData',
+    name: 'dynamicData',
+    component: () => import(
+      '_views/Details/dynamicData.vue'
+    ),
+  },
+  {
+    path: '/viewDetail',
+    name: 'viewDetail',
+    component: () => import(
+      '_views/Details/viewDetail.vue'
+    ),
+  },
+  {
     path: '*',
     redirect: '/',
   },

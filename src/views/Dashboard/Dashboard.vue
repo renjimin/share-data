@@ -4,43 +4,50 @@
         <div class="key">
           <div>
             <span>已选择:</span>
-            <el-button v-for="(item,index) in selectkey" :key="index">{{item.keyword}}</el-button>          
+            <el-tag
+              v-for="tag in tags"
+              :key="tag.name"
+              @close="handleClose(tag)"
+              closable
+              :type="tag.type">
+              {{tag.name}}
+            </el-tag>
           </div>
           <div>
             <span>关键字筛选:</span>
             <span class="keyword">
-              <Scale></Scale>
+              <Scale  @messageData="getscaleData"></Scale>
             </span>
             <span class="keyword">
-              <Area></Area> 
-            </span> 
-          </div>          
+              <Area  @messageData="getareaData"/>
+            </span>
+          </div>
         </div>
       </el-header>
       <el-row :gutter="12">
-          <div v-for="(item,index) in detail" :key="index" class="text item">   
+          <div v-for="(item,index) in detail" :key="index" class="text item">
               <el-col :span="12">
                   <el-card class="box-card" shadow="hover">
                     <img src="../../assets/images/list.png">
                     <div class="text item">
                       <div class="contain">
                         <div>{{item.name}}</div>
-                        <div>数据类型:{{item.type}}</div>
+                        <div>数据类型:{{dataType[item.type]}}</div>
                         <div>发布时间:{{item.createData}}</div>
-                        <el-button style="padding: 3px 0" type="text">详情</el-button>
-                      </div>                          
+                        <el-button style="padding: 3px 0" type="text" @click="goDetail(item)">详情</el-button>
+                      </div>
                     </div>
-                  </el-card> 
+                  </el-card>
               </el-col>
           </div>
       </el-row>
       <el-pagination
         background
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"        
+        @current-change="handleCurrentChange"
         layout="prev, pager, next"
         :total="totalpage">
-      </el-pagination>        
+      </el-pagination>
     </div>
 </template>
 <script>
@@ -55,7 +62,17 @@ export default {
       totalpage:0,
       detail:'',
       currentkey:'',
-      selectkey:''
+      selectkey:'',
+      dataType:{
+        'DynamicNodeGPS':'动态数据',
+        'DynamicNodeVideo':'动态数据',
+        'DynamicNodeFixed':'动态数据',
+        'WMTSNodeType':'服务数据',
+        'WMSNodeType':'服务数据',
+        'GovDataNode':'政务数据',
+        'DLGDataNode': '矢量数据'
+      },
+      tags: []
     };
   },
   computed: {
@@ -64,48 +81,81 @@ export default {
   components: {
     Scale,
     Area
-  },  
+  },
   created() {
       this.initData();
   },
   watch:{
     "$route": "initData"
-  }, 
+  },
   methods: {
-      async initData (){
-        let params = {
-          "code": this.$route.query.code,
-          "nowPage": this.nowPage,
-          "pageSize": this.pageSize              
-        }
-        let res = await categoryDetail(params);
-        this.detail = res.data;
-        console.log(res)
-        this.totalpage =  res.totalCount;
-        let reskey =  await categoryKey(this.$route.query.code);
-        this.currentkey = reskey;
-      },
-      async handleSizeChange(val){
-        console.log(123123)
-        let params = {
-          "code": this.$route.query.code,
-          "nowPage": val,
-          "pageSize": this.pageSize              
-        }
-        let res = await categoryDetail(params);
-        console.log(res)
-        this.detail = res;
-        this.totalpage =  res.totalCount;
-      },
-      async handleCurrentChange(val){
-        let params = {
-          "code": this.$route.query.code,
-          "nowPage": val,
-          "pageSize": this.pageSize              
-        }
-        let res = await categoryDetail(params);
-        this.detail = res.data;
+    async initData (){
+      let params = {
+        "code": this.$route.query.code,
+        "nowPage": this.nowPage,
+        "pageSize": this.pageSize
       }
+      let res = await categoryDetail(params);
+      this.detail = res.data;
+      this.totalpage =  res.totalCount;
+      let reskey =  await categoryKey(this.$route.query.code);
+      this.currentkey = reskey;
+    },
+    handleClose(tag) {
+      this.tags.splice(this.tags.indexOf(tag), 1);
+    },
+    async handleSizeChange(val){
+      let params = {
+        "code": this.$route.query.code,
+        "nowPage": val,
+        "pageSize": this.pageSize
+      }
+      let res = await categoryDetail(params);
+      console.log(res)
+      this.detail = res;
+      this.totalpage =  res.totalCount;
+    },
+    async handleCurrentChange(val){
+      let params = {
+        "code": this.$route.query.code,
+        "nowPage": val,
+        "pageSize": this.pageSize
+      }
+      let res = await categoryDetail(params);
+      this.detail = res.data;
+    },
+    goDetail(item){
+
+      console.log(item)
+      let routerurl = '';
+      switch(item.type){
+        case 'DynamicNodeGPS':
+        case 'DynamicNodeVideo':
+        case 'DynamicNodeFixed': //动态数据类型
+          routerurl = '/dynamicData';
+          break;
+        case 'WMTSNodeType':
+        case 'WMSNodeType'://服务数据类型
+          routerurl = '/serverdetails';
+          break;
+        case 'GovDataNode'://栅格/影像数据类型
+          routerurl = '/govDetail';
+          break;
+        case 'DLGDataNode': //矢量数据类型
+          routerurl = '/serverdetails';
+          break;
+        default:
+          break;
+      }
+      // this.$router.push(routerurl);
+      this.$router.push({path: routerurl, query: {code: item.code,type:item.type}})
+    },
+    getareaData(val){
+      this.tags.push(val)
+    },
+    getscaleData(val){
+      this.tags.push(val)
+    }
   },
 };
 </script>
@@ -115,6 +165,9 @@ export default {
     height: auto !important;
     border: 1px solid #E4E6EA;
     margin-bottom: 1rem;
+    .el-tag{
+      margin-right: 10px;
+    }
     .key{
       div{
         line-height: 4rem;
@@ -125,6 +178,9 @@ export default {
     }
     .keyword{
       margin-left: 20px;
+      .el-button{
+
+      }
     }
   }
   .el-card{
@@ -135,7 +191,7 @@ export default {
       button span{
         color: #73838F;
         border: 1px solid #73838F;
-        padding: 5px 10px; 
+        padding: 5px 10px;
         border-radius: 5px;
       }
     }
@@ -152,9 +208,9 @@ export default {
     .text{
       .contain{
         div:first-child{
-          height: 5rem;  
+          height: 5rem;
           font-size: 22px;
-          color: #5C6573;        
+          color: #5C6573;
         }
         div:nth-child(2){
           height: 2rem;
@@ -166,13 +222,13 @@ export default {
             margin-left: 1rem;
             padding: 2px;
           }
-        } 
+        }
         button span{
           color: #73838F;
           border: 1px solid #73838F;
-          padding: 5px 10px; 
+          padding: 5px 10px;
           border-radius: 5px;
-        }        
+        }
       }
     }
   }

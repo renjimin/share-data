@@ -1,45 +1,102 @@
 .app-body{
   height: 100%;
-  .headerbar{
-    height: 60px;
-    line-height: 60px;
-  }
   .app-contains{
     height: 100%;
-    background-color: rgba(255, 255, 255, 1)
+    background-image: url(/images/index/wbg.png);
+    background-size: 100% 100%;
   }
 }
 .app-wrapper {
   user-select: none;
   display: flex; // 左边菜单
   ul:first-child{
-    box-shadow:0 2px 12px 0 rgba(0,0,0,.4);
+    box-shadow:0 2px 12px 0 rgba(0,0,0,.2);
     border-radius: 7px;
+    height:45rem;
+    .level-nav:first-child{
+      margin-top: 2.5rem;
+    }
   }
-  .el-menu { 
+  // .el-menu {
+  //   &:not(.el-menu--collapse) {
+  //     width: 200px;
+  //   }
+  //   border-right: none;
+  //   &>div>.el-menu-item {
+  //     background: #304156 !important;
+  //   } // 子菜单的背景颜色
+  //   .el-menu-item,
+  //   .el-submenu__title {
+  //     transition: all 0.3s;
+  //     // background-color: #00ACAC !important; // 鼠标移上去的背景颜色
+  //     color: #000000 !important;
+  //     &:hover {
+  //       background-color: #00ACAC !important;
+  //       color: #FFFFFF !important;
+  //     } //   选中的背景颜色
+  //     &.is-active {
+  //       background-color: #FFFFFF ;
+  //       color: #000000 ;
+  //       height: 50px;
+  //       line-height: 50px;
+  //     }
+  //     &.is-active:first-child{
+  //       margin-top: 2.5rem;
+  //     }
+  //   } // 动画 bug
+  //   &.el-menu--collapse {
+  //     .el-submenu__icon-arrow.el-icon-arrow-right {
+  //       display: none !important;
+  //     }
+  //     .el-submenu__title span {
+  //       height: 0;
+  //       width: 0;
+  //       overflow: hidden;
+  //       visibility: hidden;
+  //       display: inline-block;
+  //     }
+  //   }
+  // }
+  .el-menu {
     &:not(.el-menu--collapse) {
       width: 220px;
-    }
-    &>div{
-      // border-radius: 5px;
     }
     border-right: none;
     &>div>.el-menu-item {
       background: #00ACAC !important;
     } // 子菜单的背景颜色
+    .level-nav {
+      .el-submenu__title{
+        transition: all 0.3s;
+        &:hover {
+          background-color: #00ACAC !important;
+          color: #FFFFFF !important;
+        } //   选中的背景颜色
+      }
+    }
+    .el-menu--inline label .el-submenu__title:hover{
+      color: #00ACAC !important;
+      background-color: #ECF1F9 !important;
+    }
+    .active {
+      background-color: #00ACAC !important;
+      color: #FFFFFF !important;
+      // .el-submenu__title:not(label){
+      //   color: #FFFFFF !important;
+      // }
+      // .is-opened{
+      //   .el-submenu__title:hover{
+      //     color: #00ACAC !important;
+      //     background-color: rgba(0,0,0,.2) !important;
+      //   }
+      // }
+    }
     .el-menu-item,
-    .nest-menu .el-submenu__title {
+    .el-submenu__title {
 
       transition: all 0.3s;
-      // background-color: #ECF1F9 !important; // 鼠标移上去的背景颜色
-      // color: #00ACAC !important;
-      &:hover {
-        // background-color: #00ACAC !important;
-        color: #00ACAC !important;
-      } //   选中的背景颜色
-      // &.is-active {
-      //   background-color: #001528 !important;
-      // }    
+      height: 45px;
+      line-height: 45px;
     } // 动画 bug
     &.el-menu--collapse {
       .el-submenu__icon-arrow.el-icon-arrow-right {
@@ -54,18 +111,16 @@
       }
 
     }
-  } 
+  }
   .app-scroll-wrap {
     flex: 1;
-    // overflow: auto;
-    background-color: #f5f7f9;
   }
   .headerbar{
     height: 48px;
     background-color: #fff;
     display: flex;
     align-items: center;
-    padding: 0 40px 0 30px;    
+    padding: 0 40px 0 30px;
   }
   //   右边内容
   .main-container {
@@ -75,7 +130,6 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #f5f7f9; // 头部导航
     .navbar {
       height: 48px;
       background-color: #fff;
@@ -263,6 +317,6 @@
 .number-badge{
   position: absolute;
   right: 36px;
-  margin-top: 0; 
-  color: #BABEC5;       
-}  
+  margin-top: 0;
+  color: #BABEC5;
+}

@@ -3,7 +3,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: "Microsoft YaHei";
+  // font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
 html {
@@ -37,12 +38,19 @@ ul,li {
   list-style: none;
 }
 
-#app,
-.app-wrapper {
+#app {
   position: absolute;
-  height: 100%;
-  width: 90%;
-  margin: 20px 5% 0 5%;;
+  height: 90%;
+  width: 70%;
+  margin: 20px 15% 0 15%;
+  color: #333;
+  font-size: 14px;
+  line-height: 1;
+}
+.app-wrapper{
+  position: absolute;
+  width: 96%;
+  margin: 20px 2% 0 2%;
   color: #333;
   font-size: 14px;
   line-height: 1;

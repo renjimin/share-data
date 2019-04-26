@@ -6,6 +6,9 @@
 
 export const baseURL = '/api/' //本地测试环境
 
+
+export const dynamicDataURL = 'http://192.168.250.156:8083/' //本地测试环境
+
 // export const baseURL = 'http://192.168.101.91'     // 本地
 
 

@@ -11,15 +11,20 @@
       <router-view/>
     </transition>
     <router-view v-else/>
+    <Footer />
   </div>
 </template>
 
 <script>
+import Footer from '@/components/footer/footer'
 import { mapGetters } from "vuex";
 export default {
   name: "app",
   computed: {
     ...mapGetters(["globalLoading", "loadingMessage", "isAni"])
+  },
+  components:{
+    Footer
   }
 };
 </script>

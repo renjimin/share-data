@@ -2,12 +2,12 @@
   <el-popover
   placement="bottom"
   width="400"
-  popper-class="sacle"	
+  popper-class="sacle"
   trigger="click">
     <el-row :gutter="10">
-      <el-col :span="6" v-for="(item,index) in sacleData" :key="index"><div class="grid-content bg-purple"></div>{{item.sacle}}</el-col>
+      <el-col :span="6" v-for="(item,index) in sacleData" :key="index" @click.native="selectsacle(item)"><div class="grid-content bg-purple"></div>{{item.sacle}}</el-col>
     </el-row>
-    <el-button slot="reference" round type="primary">比例尺</el-button>
+    <el-button slot="reference" round type="primary" size="mini">比例尺</el-button>
   </el-popover>
 </template>
 <script>
@@ -40,6 +40,14 @@
           sacletype:1
         }]
       };
+    },
+    methods:{
+      selectsacle(item) {
+        let temp = {};
+        temp.name = item.sacle;
+        temp.type = '';
+        this.$emit('messageData',temp)
+      }
     }
   };
 </script>

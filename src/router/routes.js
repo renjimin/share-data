@@ -5,10 +5,12 @@ import common from './common'
 import coverage from './coverage'
 import categorization from './categorization'
 import coordinates from './coordinates'
+import details from './details'
 
 export default [
   ...common,
   categorization,
   coverage,
   coordinates,
+  details
 ]

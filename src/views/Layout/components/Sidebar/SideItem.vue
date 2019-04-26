@@ -1,11 +1,56 @@
 <template>
   <div>
     <el-scrollbar style="height:100%">
+      <!-- <div>
+        <template v-for="item in alldata">
+          <el-submenu
+            v-if="hasChildren(item)"
+            :index="item.id"
+            :key="item.name"
+          >
+            <template slot="title">
+              <router-link :to="{path:'categorization', query:{code:item.id}}" >
+                <img src="/images/index/content.png">
+                <span slot="title">{{item.name}}</span>
+                <span class="number-badge">{{item.count}}</span>
+              </router-link>
+            </template>
+            <template v-for="val in item.children">
+              <side-item
+                class="nest-menu"
+                v-if="hasChildren(val)"
+                :routes="[val]"
+                :key="val.name"
+              />
+              <el-menu-item
+                v-else
+                :index="val.path"
+                :key="val.path"
+              >
+            <img src="/images/index/icon1.png">
+            <span slot="title">{{item.name}}</span>
+            <span class="number-badge">{{item.count}}</span>
+              </el-menu-item>
+            </template>
+          </el-submenu>
+          <el-menu-item
+            v-else
+            :index="item.path"
+            :key="item.path"
+          >
+          <router-link :to="{path:'categorization', query:{code:item.id}}" >
+            <img src="/images/index/content.png">
+            <span slot="title">{{item.name}}</span>
+            <span class="number-badge">{{item.count}}</span>
+          </router-link>
+          </el-menu-item>
+        </template>
+      </div>   -->
       <el-menu>
-        <el-submenu  v-for="item in alldata" :key="item.id" :index="item.id+item.name" class="level-nav">   
+        <el-submenu  v-for="(item,index) in alldata" :key="item.id" :index="item.id+item.name" class="level-nav" :class='{active:index == idx}'>   
               <template slot="title">
                 <router-link :to="{path:'categorization', query:{code:item.id}}" >
-                  <div @click="gotoDetail(item)">
+                  <div @click="gotoDetail(item,index)">
                     <img src="/images/index/content.png">{{item.name}}<span class="number-badge">{{item.count}}</span>
                   </div>
                 </router-link>
@@ -28,13 +73,17 @@ export default {
   data() {
     return {
       alldata:'',
-      firstNav:''
+      firstNav:'',
+      idx:0,
     }
   },
   created(){
     this.initData();
   },
   methods: {
+    hasChildren(route) {
+      return route.children && route.children.length !== 0;
+    },    
     async initData(){
       let resall = await getAllTree();
       this.alldata =  this.treeData(resall.data);   
@@ -61,17 +110,8 @@ export default {
       });
       return tree     //返回树形数据
     }, 
-    async gotoDetail(item){
-      let data = {
-          "code": item.Id,
-          "nowPage": 1,
-          "pageSize": 10,              
-      }
-      let resdetail  =  await categoryDetail(data);
-      const {code } = resdetail;
-      if (code === ! 0) {
-          this.$router.push({name:'routes',params:{pk_refinfo:'test',value:'test1'}});
-      }    
+    async gotoDetail(item,index){
+      this.idx = index;
     }
   }
 };

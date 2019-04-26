@@ -42,10 +42,12 @@ import {
   TimeSelect,
   TimePicker,
   //other
-  Card, 
+  Card,
   Scrollbar,
 
   Header,
+  Main,
+  Footer,
   //popover
   Popover
 } from 'element-ui';
@@ -85,6 +87,8 @@ Vue.use(TimePicker);
 Vue.use(Card);
 Vue.use(Scrollbar);
 Vue.use(Header);
+Vue.use(Main);
+Vue.use(Footer);
 Vue.use(Popover);
 
 
