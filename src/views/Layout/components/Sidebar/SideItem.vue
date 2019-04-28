@@ -47,7 +47,7 @@
         </template>
       </div>   -->
       <el-menu>
-        <el-submenu  v-for="(item,index) in alldata" :key="item.id" :index="item.id+item.name" class="level-nav" :class='{active:index == idx}'>   
+        <el-submenu  v-for="(item,index) in alldata" :key="item.id" :index="item.id+item.name" class="level-nav" :class='{active:index == idx}'>
               <template slot="title">
                 <router-link :to="{path:'categorization', query:{code:item.id}}" >
                   <div @click="gotoDetail(item,index)">
@@ -69,7 +69,7 @@ export default {
   props: ["routes"],
   components: {
     NavItem
-  },  
+  },
   data() {
     return {
       alldata:'',
@@ -83,10 +83,10 @@ export default {
   methods: {
     hasChildren(route) {
       return route.children && route.children.length !== 0;
-    },    
+    },
     async initData(){
       let resall = await getAllTree();
-      this.alldata =  this.treeData(resall.data);   
+      this.alldata =  this.treeData(resall.data);
       let params = 0;
     },
     async firstClick(index,item) {
@@ -109,7 +109,7 @@ export default {
         return father.pId==0;      //返回第一层
       });
       return tree     //返回树形数据
-    }, 
+    },
     async gotoDetail(item,index){
       this.idx = index;
     }

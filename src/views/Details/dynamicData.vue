@@ -3,7 +3,7 @@
     <Header />
     <div class="page-dynamicData">
       <Back></Back>
-      <div class="el-header" v-for="(item,index) in category" :key='index' v-show='item.category'>
+      <div class="el-header" v-for="(item,index) in category" :key='index' v-show='item.newcategory.length > 0'>
         <el-row>
           <el-col>
             <el-card class="box-card" @click.native="detailData(item)">
@@ -16,19 +16,21 @@
           </el-col>
         </el-row>
         <div class="dynamic-content">
-          <el-row v-for="(item,index) in item.category" :key='index' v-show="item.categorykey.indexOf(categoryname) > -1">
+          <el-row v-for="(item,index) in item.category" :key='index' v-show="item.categorykey.indexOf(categoryname) > -1" class="dynamic-row">
             <el-col :span="16">
-              <el-col :span='2'><img src="/images/detail/json.png"></el-col>
-              <el-col :span='22'>
-                <div class="categortitle">{{item.categoryalias}} </div>
-                <span>{{item.categoryname}}</span>
-              </el-col>
+              <el-row>
+                <el-col :span='2'><img src="/images/detail/json.png"></el-col>
+                <el-col :span='22'>
+                  <div class="categortitle">{{item.categoryalias}} </div>
+                  <span>{{item.categoryname}}</span>
+                </el-col>
+              </el-row>
             </el-col>
-            <el-col :span="5">
-              <span>{{item.time}}</span>
-              <span>{{item.size}}</span>
+            <el-col :span="4" class="catelog-des">
+              <span>{{item.categoryalias}}</span>
+              <span>{{item.categoryname}}</span>
             </el-col>
-            <el-col :span="3">
+            <el-col :span="4" class="catelog-btn">
               <el-button @click="toView(item)" size="mini">查看</el-button>
               <el-button size="mini">下载</el-button>
             </el-col>
@@ -64,7 +66,6 @@ export default {
           this.categoryname ='';
           break;
         default:
-          this.categoryname = '';
           break;
       }
       this.initData();
@@ -73,10 +74,27 @@ export default {
       async initData() {
         let data = '111';
         let res = await getDynamicData(data);
-        const {status} =  res
-        if (status === 'SUCCESS') {
-          this.category = res.responseObj.data;
+
+        const { status,responseObj } = res;
+
+        if (res.status === 'SUCCESS') {
+          responseObj.data.forEach(element => {
+            const {category} = element;
+            if (category) {
+              let temparr = [];
+              category.forEach((item,index) => {
+                if (this.categoryname == item.categoryname) {
+                  temparr.push(item)
+                }
+              })
+              element.newcategory = temparr;
+            }else{
+              element.newcategory = [];
+            }
+          });
         }
+        this.category = res.responseObj.data;
+        console.log(this.category)
       },
       async toView(item) {
         let params = {
@@ -84,6 +102,7 @@ export default {
           categorykey:item.categorykey
         }
         let res = await getListDeviceID(params);
+
       },
       detailData(item) {
 
@@ -125,15 +144,14 @@ export default {
   }
   .dynamic-content{
     margin-top: 20px;
-    border: 1px solid #eaeaea;
-    .el-row{
-      border-bottom: 1px dashed #eaeaea;
+    border: 1px solid rgb(228, 230, 234);
+    .dynamic-row{
       padding: 20px 0;
       .el-col-16{
         .el-col-2{
           line-height: 100px;
           height: 50px;
-          padding-left: 40px;
+          text-align: right;
         }
         .el-col-22{
           padding: 0 0 0 10px;
@@ -149,14 +167,14 @@ export default {
           }
         }
       }
-      .el-col-5{
+      .catelog-des{
         margin-top: 45px;
         span:nth-child(2){
           margin-left: 50px;
         }
       }
-      .el-col-3{
-        margin-top: 15px;
+      .catelog-btn{
+        margin-top: 32px;
         button{
           padding: 7px 20px;
           font-size: 14px;
@@ -164,6 +182,9 @@ export default {
           border: 1px solid rgb(92, 101, 115);
         }
       }
+    }
+    .dynamic-row:not(:first-of-type){
+      border-top: 1px dashed rgb(228, 230, 234);
     }
   }
 }

@@ -5,7 +5,7 @@ export function getDetailData(params) {
   return request.get('/datashare/b/item/detail',{params});
 }
 
-// 获取动态数据详情
+// 获取动态数据目录
 export function getDynamicData(params) {
   return request.post(`${dynamicDataURL}managerServer/getDynamicCatalog?key=${params}`);
 }

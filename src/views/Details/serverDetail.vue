@@ -10,8 +10,8 @@
           </el-col>
           <el-col :span="7">
             <div class="title">全球矢量中文注记服务</div>
-            <div class="des"><span>服务简介:{{detailinfo.serverdes}}</span> </div>
-            <div class="des"><span>发布时间:{{detailinfo.time}}</span></div>
+            <div class="des"><span>服务简介:{{mapdata.create_date}}</span> </div>
+            <div class="des"><span>发布时间:{{renderTime(mapdata.create_date)}}</span></div>
             <div class="des"><span>坐标系:{{detailinfo.CSYS}}</span></div>
             <div class="des"><span>服务URL:{{detailinfo.serverurl}}</span></div>
           </el-col>
@@ -39,7 +39,7 @@
           </div>
           <el-form label-width="111px">
             <el-form-item label="图层名称">
-              <span>{{mapdata.name}}</span>
+              <span>{{mapdata.layerName}}</span>
             </el-form-item>
             <el-form-item label="图层简介">
               <span>{{mapdata.des}}</span>
@@ -48,10 +48,13 @@
               <span>{{mapdata.area}}</span>
             </el-form-item>
             <el-form-item label="上次更新时间">
-              <span>{{mapdata.updatetime}}</span>
+              <span>{{renderTime(mapdata.update_date)}}</span>
             </el-form-item>
             <el-form-item label="服务范围">
-              <span>{{mapdata.servicearea}}</span>
+              <div>{{mapdata.xmax}}</div>
+              <div>{{mapdata.xmin}}</div>
+              <div>{{mapdata.ymax}}</div>
+              <div>{{mapdata.ymin}}</div>
             </el-form-item>
           </el-form>
         </el-col>
@@ -104,10 +107,19 @@ export default {
     methods:{
       async initData() {
         let params = {
-          code:this.$route.query.type,
+          code:this.$route.query.code,
           type:this.$route.query.type,
         }
         let res = await getDetailData(params);
+        const { code, data } = res;
+        if (code === '0') {
+          this.mapdata =  data;
+          console.log(this.mapdata)
+        }
+      },
+      renderTime(date) {
+        let dateee = new Date(date).toJSON();
+        return new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
       },
       download(){
         this.dialogTableVisible = true;

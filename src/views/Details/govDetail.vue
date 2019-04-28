@@ -6,8 +6,7 @@
         <el-row>
           <el-col :span="2" @click.native="goBack"><img src="/images/pubilc/icon-back.png">返回</el-col>
           <el-col :span="22">
-            <a href="" download="政务数据.csv" id="btn" @click="downloadexcel">下载</a>
-            <!-- <el-button size="mini" round @click="downloadexcel">下载</el-button> -->
+            <a href="#"  id="btn" @click="downloadexcel">下载</a>
           </el-col>
         </el-row>
       </div>
@@ -17,6 +16,7 @@
         <el-col :span="4">
           <el-input
             placeholder="请输入关键字查询"
+            @input='searchData'
             v-model="inputvalue">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
@@ -53,6 +53,8 @@
 <script>
 import Header from '@/components/header/Header'
 import {getDetailData} from '@/api/detail/index'
+import {searcher} from '@/api/index/index'
+import {export_json_to_excel} from '../../excel/Export2Excel';
 export default {
     components:{
       Header
@@ -61,6 +63,7 @@ export default {
         return {
           tableData: [],
           totalpage:0,
+          pagesize:10,
           tableCol:[],
           inputvalue:''
         }
@@ -75,9 +78,25 @@ export default {
           code:this.$route.query.code,
           type:this.$route.query.type,
           nowPage:1,
-          pageSize:10
+          pageSize:this.pagesize
         }
         let res = await getDetailData(params);
+        const { code } = res;
+        if (code === '0') {
+          this.tableCol =  res.alias;
+          this.tableData = res.data.data;
+          this.totalpage = res.data.totalCount;
+        }
+      },
+      async searchData () {
+        let data = {
+          keyword:this.inputvalue,
+          code:this.$route.query.code,
+          type:this.$route.query.type,
+          nowPage:1,
+          pageSize:this.pagesize,
+        }
+        let res = await getDetailData(data);
         const { code } = res;
         if (code === '0') {
           this.tableCol =  res.alias;
@@ -89,8 +108,9 @@ export default {
         let params = {
           code:this.$route.query.code,
           type:this.$route.query.type,
+          keyword:this.inputvalue,
           nowPage:val,
-          pageSize:10
+          pageSize:this.pagesize
         }
         let res = await getDetailData(params);
         const { code } = res;
@@ -100,19 +120,29 @@ export default {
           this.totalpage = res.data.totalCount;
         }
       },
+      /**
+       * 返回按钮
+       */
       goBack() {
         this.$router.go(-1);
       },
+      /**
+       * 导出excel
+       */
       downloadexcel() {
-        var html = document.getElementsByTagName("table")[0].outerHTML;
-        // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
+        const tHeader = [];
+        const filterVal = [];
+        this.tableCol.forEach(element => {
+          tHeader.push(element.fieldAlias); // 设置Excel的表格第一行的标题
+          filterVal.push(element.fieldName); //tableData里对象的属性
+        });
 
-        var blob = new Blob([this.tableData], { type: "application/vnd.ms-excel " });
-        var a = document.getElementsByTagName("a")[0];
-        // 利用URL.createObjectURL()方法为a元素生成blob URL
-        a.href = URL.createObjectURL(blob);
-        // 设置文件名，目前只有Chrome和FireFox支持此属性
-        a.download = "政务数据.xls";
+        const list = this.tableData;  //把data里的tableData存到list
+        const data = this.formatJson(filterVal, list);
+        export_json_to_excel(tHeader, data, '政务数据');
+      },
+      formatJson(filterVal, jsonData) {
+        return jsonData.map(v => filterVal.map(j => v[j]))
       }
     }
 }
