@@ -16,3 +16,8 @@ export function getListDeviceID(params) {
 }
 
 
+// 获取动态数据详情
+export function setdownloadTime(params) {
+  return request.get(`datashare/b/item/detail/download`,{params});
+}
+

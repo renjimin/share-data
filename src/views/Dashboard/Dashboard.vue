@@ -53,7 +53,10 @@
 <script>
 import Scale from '@/components/scale/index.vue'
 import Area from '@/components/area/index.vue'
+import {searcher} from '@/api/index/index'
 import {categoryDetail,categoryKey} from '@/api/index/index'
+import { uniqueJSON } from '@/libs/utils'
+import Bus from '@/libs/bus'
 export default {
   data() {
     return {
@@ -72,7 +75,9 @@ export default {
         'GovDataNode':'政务数据',
         'DLGDataNode': '矢量数据'
       },
-      tags: []
+      tags: [],
+      searchscale:[],
+      searchregion:[],
     };
   },
   computed: {
@@ -85,8 +90,17 @@ export default {
   created() {
       this.initData();
   },
+  mounted(){
+    Bus.$on('head-search', data => {
+      this.detail = data.data;
+      this.totalpage =  data.totalCount;
+    });
+  },
   watch:{
-    "$route": "initData"
+    "$route": "initData",
+    tags(val){
+      this.search();
+    }
   },
   methods: {
     async initData (){
@@ -102,31 +116,47 @@ export default {
       this.currentkey = reskey;
     },
     handleClose(tag) {
+      console.log(tag)
       this.tags.splice(this.tags.indexOf(tag), 1);
+      this.searchscale.splice(this.searchscale.indexOf(tag.name),1);
+      this.searchregion.splice(this.searchregion.indexOf(tag.name),1);
+      this.search();
+    },
+    async search(){
+      let data ={
+        searchKey:sessionStorage.getItem('searchword') || null,
+        scale:this.searchscale.join(',') || null,
+        region:this.searchregion.join(',') || null,
+        pageSize:this.pageSize,
+        nowPage:1
+      }
+      let res = await searcher(data);
+      const { code } = res;
+      if (code === '0') {
+        this.detail = res.data;
+        this.totalpage =  res.totalCount;
+      }
     },
     async handleSizeChange(val){
       let params = {
-        "code": this.$route.query.code,
-        "nowPage": val,
-        "pageSize": this.pageSize
+        code: this.$route.query.code,
+        nowPage: val,
+        pageSize: this.pageSize
       }
       let res = await categoryDetail(params);
-      console.log(res)
-      this.detail = res;
+      this.detail = res.data;
       this.totalpage =  res.totalCount;
     },
     async handleCurrentChange(val){
       let params = {
-        "code": this.$route.query.code,
-        "nowPage": val,
-        "pageSize": this.pageSize
+        code: this.$route.query.code,
+        nowPage: val,
+        pageSize: this.pageSize
       }
       let res = await categoryDetail(params);
       this.detail = res.data;
     },
     goDetail(item){
-
-      console.log(item)
       let routerurl = '';
       switch(item.type){
         case 'DynamicNodeGPS':
@@ -151,10 +181,16 @@ export default {
       this.$router.push({path: routerurl, query: {code: item.code,type:item.type}})
     },
     getareaData(val){
-      this.tags.push(val)
+      this.tags.push(val);
+      this.tags = uniqueJSON(this.tags,'name');
+      this.searchregion.push(val.name);
+      this.searchregion = [...new Set(this.searchregion)];
     },
     getscaleData(val){
-      this.tags.push(val)
+      this.tags.push(val);
+      this.tags = uniqueJSON(this.tags,'name');
+      this.searchscale.push(val.name);
+      this.searchscale = [...new Set(this.searchscale)];
     }
   },
 };

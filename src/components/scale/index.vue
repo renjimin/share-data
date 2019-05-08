@@ -15,28 +15,28 @@
     data() {
       return {
         sacleData: [{
-          sacle: '1/10',
+          sacle: '1:10',
           sacletype:1
         },{
-          sacle: '1/100',
+          sacle: '1:100',
           sacletype:1
         },{
-          sacle: '1/1000',
+          sacle: '1:1000',
           sacletype:1
         },{
-          sacle: '1/10000',
+          sacle: '1:10000',
           sacletype:1
         },{
-          sacle: '1/100000',
+          sacle: '1:100000',
           sacletype:1
         },{
-          sacle: '1/1000000',
+          sacle: '1:1000000',
           sacletype:1
         },{
-          sacle: '1/10000000',
+          sacle: '1:10000000',
           sacletype:1
         },{
-          sacle: '1/100000000',
+          sacle: '1:100000000',
           sacletype:1
         }]
       };

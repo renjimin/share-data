@@ -29,6 +29,17 @@
           </template>
         </el-input>
       </el-form-item>
+      <el-form-item prop="password">
+        <el-input
+          maxlength="4"
+          v-model="formData.password"
+          clearable
+          placeholder="请输入验证码"
+          type="password"
+        >
+        </el-input>
+        <img src="http://192.168.99.128:8083/datashare/code">
+      </el-form-item>
       <el-form-item>
         <el-button
           native-type="submit"

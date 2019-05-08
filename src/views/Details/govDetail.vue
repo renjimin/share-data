@@ -52,7 +52,7 @@
 </template>
 <script>
 import Header from '@/components/header/Header'
-import {getDetailData} from '@/api/detail/index'
+import {getDetailData,setdownloadTime} from '@/api/detail/index'
 import {searcher} from '@/api/index/index'
 import {export_json_to_excel} from '../../excel/Export2Excel';
 export default {
@@ -129,17 +129,31 @@ export default {
       /**
        * 导出excel
        */
-      downloadexcel() {
+      async downloadexcel() {
         const tHeader = [];
         const filterVal = [];
         this.tableCol.forEach(element => {
           tHeader.push(element.fieldAlias); // 设置Excel的表格第一行的标题
           filterVal.push(element.fieldName); //tableData里对象的属性
         });
-
-        const list = this.tableData;  //把data里的tableData存到list
+        let param = {
+          keyword:this.inputvalue,
+          code:this.$route.query.code,
+          type:this.$route.query.type,
+          nowPage:1,
+          pageSize:this.totalpage,
+        }
+        let res = await getDetailData(param);
+        const list = res.data.data;  //把data里的tableData存到list
         const data = this.formatJson(filterVal, list);
         export_json_to_excel(tHeader, data, '政务数据');
+        let params = {
+          userName:'admin',
+          resourceCode:this.$route.query.code,
+          resourceType:this.$route.query.type,
+          startDownTime:new Date().getTime()
+        }
+        await setdownloadTime(params);
       },
       formatJson(filterVal, jsonData) {
         return jsonData.map(v => filterVal.map(j => v[j]))
@@ -191,7 +205,7 @@ export default {
   .el-content{
     line-height: 44px;
     height: 44px;
-    background-color: #7F8494;
+    background-color: rgb(127, 132, 148);
     color: #FFFFFF;
     .el-col-8{
       div{

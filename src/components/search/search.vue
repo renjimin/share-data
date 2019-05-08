@@ -1,12 +1,15 @@
 <template>
   <div class="seach-data">
-    <el-input placeholder="请输入关键字进行搜索" v-model="input5" class="input-with-select">
-      <i slot="prefix" class="el-input__icon el-icon-search" @click="search"></i>
+    <el-input placeholder="请输入关键字进行搜索" v-model="searchvalue"
+    @input="search"
+    class="input-with-select">
+      <i slot="prefix" class="el-input__icon el-icon-search"></i>
     </el-input>
   </div>
 </template>
 <script>
 import {searcher} from '@/api/index/index'
+import Bus from '@/libs/bus'
 export default {
   name: "Empty",
   props: {
@@ -17,21 +20,23 @@ export default {
   },
   data() {
     return {
-      input5:'',
+      searchvalue:'',
       pageSize:4,
     }
   },
   methods:{
     async search(){
-      let data ={
-        code:'',
-        scale:'',
-        region:'',
-        redLine:'',
+      let params ={
+        searchKey:this.searchvalue || null,
         pageSize:this.pageSize,
         nowPage:1
       }
-      let res = await searcher(data);
+      sessionStorage.setItem('searchword',this.searchvalue);
+      let res = await searcher(params);
+      const { code } = res;
+      if (code === '0') {
+        Bus.$emit('head-search',res);
+      }
     }
   }
 };
