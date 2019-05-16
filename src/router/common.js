@@ -75,57 +75,141 @@ export default [
       {
         path: '/rolemanage',
         name: 'rolemanage',
+        meta:{
+          title:'用户角色管理',
+        },
         component: () => import(
-          '_views/manage/roleManage/index.vue'
+          '_views/manage/user/roleManage/index.vue'
         ),
-      },
-      {
-        path:'/rolelist',
-        name:'rolelist',
-        component:() => import (
-          '_views/manage/rolelist/index.vue'
-        )
       },
       {
         path:'/applicationlist',
         name:'applicationlist',
+        meta:{
+          title:'用户角色管理',
+        },
         component:() => import (
-          '_views/manage/applicationlist/index.vue'
+          '_views/manage/user/applicationlist/index.vue'
         )
       },
       {
         path:'/permissiontime',
         name:'permissiontime',
+        meta:{
+          title:'用户角色管理',
+        },
         component:() => import (
-          '_views/manage/permissiontime/index.vue'
+          '_views/manage/user/permissiontime/index.vue'
         )
       },
       {
         path:'/newuser',
         name:'newuser',
+        meta:{
+          title:'新增用户',
+        },
         component:() => import (
-          '_views/manage/handleUser/add.vue'
+          '_views/manage/user/handleUser/add.vue'
         )
       },
       {
         path:'/edituser',
         name:'edituser',
+        meta:{
+          title:'编辑用户',
+        },
         component:() => import (
-          '_views/manage/handleUser/edituser.vue'
+          '_views/manage/user/handleUser/edituser.vue'
+        )
+      },
+      {
+        path:'/rolelist',
+        name:'rolelist',
+        meta:{
+          title:'角色列表',
+        },
+        component:() => import (
+          '_views/manage/user/rolelist/index.vue'
         )
       },
       {
         path:'/addrole',
         name:'addrole',
+        meta:{
+          title:'新增角色',
+        },
         component:() => import (
-          '_views/manage/handlerole/add.vue'
+          '_views/manage/user/handlerole/add.vue'
         )
       },
       {
         path:'/editrole',
         name:'editrole',
+        meta:{
+          title:'编辑角色',
+        },
         component:() => import (
-          '_views/manage/handlerole/edit.vue'
+          '_views/manage/user/handlerole/edit.vue'
+        )
+      },
+      {
+        path:'/resourcePermissions',
+        name:'resourcePermissions',
+        meta:{
+          title:'资源权限分配',
+        },
+        component:() => import (
+          '_views/manage/userRights/resourcePermissions/index.vue'
+        )
+      },
+      {
+        path:'/permissionAudit',
+        name:'permissionAudit',
+        meta:{
+          title:'资源权限审核',
+        },
+        component:() => import (
+          '_views/manage/userRights/permissionAudit/index.vue'
+        )
+      },
+      {
+        path:'/resourcePermissionslist',
+        name:'resourcePermissionslist',
+        meta:{
+          title:'资源权限列表',
+        },
+        component:() => import (
+          '_views/manage/userRights/resourcePermissionslist/index.vue'
+        )
+      },
+      {
+        path:'/controlList',
+        name:'controlList',
+        meta:{
+          title:'资源访问控制列表',
+        },
+        component:() => import (
+          '_views/manage/resourceMonitoring/controlList/index.vue'
+        )
+      },
+      {
+        path:'/informationList',
+        name:'informationList',
+        meta:{
+          title:'资源访问信息列表',
+        },
+        component:() => import (
+          '_views/manage/resourceMonitoring/informationList/index.vue'
+        )
+      },
+      {
+        path:'/accessStatistics',
+        name:'accessStatistics',
+        meta:{
+          title:'资源访问统计',
+        },
+        component:() => import (
+          '_views/manage/resourceMonitoring/accessStatistics/index.vue'
         )
       },
     ]

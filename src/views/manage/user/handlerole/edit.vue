@@ -8,8 +8,8 @@
     <div class="user-content-left">
       <p class="user-base">基本信息</p>
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="角色编码:" prop="roleCode">
-          <el-input type="text" v-model="ruleForm.roleCode" autocomplete="off"></el-input>
+        <el-form-item label="角色编码:">
+          <el-input type="text" v-model="ruleForm.roleCode" autocomplete="off" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="角色名称" prop="roleName">
           <el-input type="text" v-model="ruleForm.roleName" autocomplete="off"></el-input>
@@ -37,18 +37,6 @@ import { setEditRole } from '@/api/manage/rolelist/index'
 import { getAllTree } from '@/api/index/index'
   export default {
     data() {
-      let validateRoleCode = (rule, value, callback) =>{
-        if (value === '') {
-          callback(new Error('请输入角色编码!'));
-        } else {
-          if (value.length < 2) {
-            callback(new Error('最少要输入两个字符!'));
-          }else{
-            callback();
-          }
-
-        }
-      };
       let validateRoleName = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入角色名称'));
@@ -61,16 +49,13 @@ import { getAllTree } from '@/api/index/index'
         }
       }
       return {
-        ruleForm: {},
+        ruleForm: this.$route.query,
         treedata:'',
         defaultProps: {
           children: 'children',
           label: 'name'
         },
         rules: {
-          roleCode:[
-            { validator:validateRoleCode,trigger:'blur' }
-          ],
           roleName: [
             { validator: validateRoleName, trigger: 'blur' }
           ],
@@ -108,6 +93,7 @@ import { getAllTree } from '@/api/index/index'
           "categoryCodes": this.$refs.tree.getCheckedKeys(),
           "roleCode": this.ruleForm.roleCode,
           "roleName": this.ruleForm.roleName,
+          "id":this.$route.query.id,
           "posIds":this.$route.query.posIds
         };
         let res = await setEditRole(params);

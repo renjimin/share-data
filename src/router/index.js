@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import routes from './routes'
 import store from '@/store'
-
+import http from '@/utils/httpRequest'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 

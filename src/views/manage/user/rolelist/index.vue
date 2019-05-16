@@ -121,7 +121,8 @@ import {getrolelist,setDeleteRole} from '@/api/manage/rolelist/index'
        * 编辑用户
        */
       editUser(item) {
-        this.$router.push({name:'editrole',query:{id:item.row.id,roleCode:item.row.roleId,roleName:item.row.username,categoryCodes:item.row.telephone,posIds:item.row.posIds}});
+        debugger
+        this.$router.push({name:'editrole',query:{id:item.row.id,roleCode:item.row.roleCode,roleName:item.row.roleName,categoryCodes:item.row.telephone,posIds:item.row.posIds}});
       },
       /**
        * 删除用户

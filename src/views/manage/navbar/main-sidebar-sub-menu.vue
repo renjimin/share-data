@@ -40,28 +40,84 @@ export default {
           {
             "menuId":2,"parentId":0,"parentName":null,"name":"用户权限分配","url":null,"perms":null,"type":0,"icon":"/images/manage/index/icon-地图配置.png","orderNum":0,"open":null,
             "list":[
-              {"menuId":1,"parentId":1,"parentName":null,"name":"资源权限分配","url":"sys/user","perms":null,"type":1,"icon":"admin","orderNum":1,"open":null,"list":null},
-              {"menuId":2,"parentId":1,"parentName":null,"name":"资源权限审核","url":"sys/role","perms":null,"type":1,"icon":"role","orderNum":2,"open":null,"list":null},
-              {"menuId":3,"parentId":1,"parentName":null,"name":"资源权限列表","url":"sys/menu","perms":null,"type":1,"icon":"menu","orderNum":3,"open":null,"list":null}
+              {"menuId":1,"parentId":1,"parentName":null,"name":"资源权限分配","url":"resourcePermissions","perms":null,"type":1,"icon":"admin","orderNum":1,"open":null,"list":null},
+              {"menuId":2,"parentId":1,"parentName":null,"name":"资源权限审核","url":"permissionAudit","perms":null,"type":1,"icon":"role","orderNum":2,"open":null,"list":null},
+              {"menuId":3,"parentId":1,"parentName":null,"name":"资源权限列表","url":"resourcePermissionslist","perms":null,"type":1,"icon":"menu","orderNum":3,"open":null,"list":null}
               ]
           },
           {
             "menuId":3,"parentId":0,"parentName":null,"name":"资源监控","url":null,"perms":null,"type":0,"icon":"/images/manage/index/icon-权限申请.png","orderNum":0,"open":null,
             "list":[
-              {"menuId":1,"parentId":1,"parentName":null,"name":"资源访问控制列表","url":"sys/user","perms":null,"type":1,"icon":"admin","orderNum":1,"open":null,"list":null},
-              {"menuId":2,"parentId":1,"parentName":null,"name":"资源访问信息列表","url":"sys/role","perms":null,"type":1,"icon":"role","orderNum":2,"open":null,"list":null},
-              {"menuId":3,"parentId":1,"parentName":null,"name":"资源访问统计","url":"sys/menu","perms":null,"type":1,"icon":"menu","orderNum":3,"open":null,"list":null}
+              {"menuId":1,"parentId":1,"parentName":null,"name":"资源访问控制列表","url":"controlList","perms":null,"type":1,"icon":"admin","orderNum":1,"open":null,"list":null},
+              {"menuId":2,"parentId":1,"parentName":null,"name":"资源访问信息列表","url":"informationList","perms":null,"type":1,"icon":"role","orderNum":2,"open":null,"list":null},
+              {"menuId":3,"parentId":1,"parentName":null,"name":"资源访问统计","url":"accessStatistics","perms":null,"type":1,"icon":"menu","orderNum":3,"open":null,"list":null}
               ]
           }
         ]
     }
   },
+  computed: {
+    sidebarLayoutSkin: {
+      get () { return this.$store.state.common.sidebarLayoutSkin }
+    },
+    sidebarFold: {
+      get () { return this.$store.state.common.sidebarFold }
+    },
+    menuList: {
+      get () { return this.$store.state.common.menuList },
+      set (val) { this.$store.commit('common/updateMenuList', val) }
+    },
+    menuActiveName: {
+      get () { return this.$store.state.common.menuActiveName },
+      set (val) { this.$store.commit('common/updateMenuActiveName', val) }
+    },
+    mainTabs: {
+      get () { return this.$store.state.common.mainTabs },
+      set (val) { this.$store.commit('common/updateMainTabs', val) }
+    },
+    mainTabsActiveName: {
+      get () { return this.$store.state.common.mainTabsActiveName },
+      set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
+    }
+  },
+  watch: {
+    $route: 'routeHandle'
+  },
+  created() {
+    this.routeHandle(this.$route)
+  },
   methods:{
     gotoRouteHandle (item) {
-      console.log(item)
       if (item) {
         this.$router.push({ name: item.url })
       }
+    },
+    // 路由操作
+    routeHandle (route) {
+      console.log(123)
+      // if (route.meta.isTab) {
+        // tab选中, 不存在先添加
+        var tab = this.mainTabs.filter(item => item.name === route.name)[0]
+        if (!tab) {
+          if (route.meta.isDynamic) {
+            route = this.dynamicMenuRoutes.filter(item => item.name === route.name)[0]
+            if (!route) {
+              return console.error('未能找到可用标签页!')
+            }
+          }
+          tab = {
+            menuId: route.meta.menuId || route.name,
+            name: route.name,
+            title: route.meta.title,
+            iframeUrl: route.meta.iframeUrl || '',
+            params: route.params,
+            query: route.query
+          }
+          this.mainTabs = this.mainTabs.concat(tab)
+        }
+        this.menuActiveName = tab.menuId + ''
+        this.mainTabsActiveName = tab.name
+      // }
     }
   }
 }

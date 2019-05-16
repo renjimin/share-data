@@ -1,8 +1,7 @@
 <template>
-  <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
+  <main class="site-content">
     <!-- 主入口标签页 s -->
     <el-tabs
-      v-if="$route.meta.isTab"
       v-model="mainTabsActiveName"
       :closable="true"
       @tab-click="selectedTabHandle"
@@ -18,18 +17,20 @@
             :src="item.iframeUrl"
             width="100%" height="100%" frameborder="0" scrolling="yes">
           </iframe>
-          <keep-alive v-else>
+          <!-- <keep-alive v-else> -->
             <router-view v-if="item.name === mainTabsActiveName" />
-          </keep-alive>
+          <!-- </keep-alive> -->
         </el-card>
       </el-tab-pane>
     </el-tabs>
     <!-- 主入口标签页 e -->
-    <el-card v-else :body-style="siteContentViewHeight">
+
+    <!-- <el-card v-else :body-style="siteContentViewHeight">
+          {{mainTabs}}
       <keep-alive>
         <router-view />
       </keep-alive>
-    </el-card>
+    </el-card> -->
   </main>
 </template>
 
@@ -52,7 +53,7 @@
         get () { return this.$store.state.common.mainTabs },
         set (val) { this.$store.commit('common/updateMainTabs', val) }
       },
-      mainTabsActiveName: {
+      mainTabsActiveName  : {
         get () { return this.$store.state.common.mainTabsActiveName },
         set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
       },
@@ -116,12 +117,30 @@
 </script>
 <style lang="scss">
 .site-content{
-  top:64px;
+  top:28px;
   position: absolute;
   padding-top: 50px;
   margin-left: 230px;
   min-height: 100%;
   width: calc(100% - 250px);
+  .el-tabs__header{
+    .el-tabs__active-bar{
+      width: 0 !important;
+    }
+    .el-tabs__item {
+      border-radius: 4px;
+      background: #b3b9c7;
+      color: #fff;
+      height: 34px;
+      line-height: 34px;
+      border: none;
+      margin-right: 15px;
+    }
+    .is-active{
+      background: #bd5795;
+      color: #fff;
+    }
+  }
   .el-card{
     border-top: 3px solid #c387bc;
     .el-card__body{
