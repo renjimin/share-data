@@ -1,0 +1,98 @@
+.login-page {
+  position: relative;
+  height: 100%;
+  background: url(../../assets/images/login-bg.jpg) center/cover;
+  canvas {
+    display: block;
+  }
+  .logo-box {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    img {
+      height: 60px;
+      margin-right: 20px;
+    }
+  }
+  
+  .login-container {
+    position: absolute;
+    right: 160px;
+    top: 50%;
+    transform: translateY(-60%);
+    width: 310px;
+    min-height: 276px;
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all .4s;
+    &.active {
+      min-height: 332px;
+    }
+    .login-title {
+      color: #17233d;
+      height: 50px;
+      line-height: 50px;
+      font-weight: 700;
+      padding-left: 26px;
+      border-bottom: 1px solid #e8eaec;
+    }
+    .form-con {
+      padding: 26px 26px 16px;
+      .el-form-item {
+        margin-bottom: 24px;
+        .el-input-group__prepend {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+      }
+      .reset-password {
+        color: #c3c3c3;
+        font-size: 12px;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// 动画
+.zui-zoom-enter-active,
+.zui-zoom-leave-active {
+  position: absolute;
+  margin: auto;
+}
+
+.zui-zoom-enter-active {
+  animation: zoomIn 0.4s;
+}
+
+.zui-zoom-leave-active {
+  animation: zoomOut 0.4s;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.5, 0.5, 0.5);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    transform: scale3d(0.6, 0.6, 0.6);
+  }
+  to {
+    opacity: 0;
+  }
+}

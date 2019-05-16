@@ -11,7 +11,7 @@
       <router-view/>
     </transition>
     <router-view v-else/>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 

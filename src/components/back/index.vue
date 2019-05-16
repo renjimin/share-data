@@ -31,6 +31,12 @@ export default {
   line-height: 50px;
   color: #3E84D6;
   font-size: 14px;
+  .el-row
+  {
+    .el-col-2{
+      cursor: pointer;
+    }
+  }
   img{
     margin: 0 5px 0 15px;
     vertical-align: middle;

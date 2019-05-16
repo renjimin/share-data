@@ -66,6 +66,71 @@ export default [
     ),
   },
   {
+    path: '/manage',
+    name: 'manage',
+    component: () => import(
+      '_views/manage/index.vue'
+    ),
+    children: [
+      {
+        path: '/rolemanage',
+        name: 'rolemanage',
+        component: () => import(
+          '_views/manage/roleManage/index.vue'
+        ),
+      },
+      {
+        path:'/rolelist',
+        name:'rolelist',
+        component:() => import (
+          '_views/manage/rolelist/index.vue'
+        )
+      },
+      {
+        path:'/applicationlist',
+        name:'applicationlist',
+        component:() => import (
+          '_views/manage/applicationlist/index.vue'
+        )
+      },
+      {
+        path:'/permissiontime',
+        name:'permissiontime',
+        component:() => import (
+          '_views/manage/permissiontime/index.vue'
+        )
+      },
+      {
+        path:'/newuser',
+        name:'newuser',
+        component:() => import (
+          '_views/manage/handleUser/add.vue'
+        )
+      },
+      {
+        path:'/edituser',
+        name:'edituser',
+        component:() => import (
+          '_views/manage/handleUser/edituser.vue'
+        )
+      },
+      {
+        path:'/addrole',
+        name:'addrole',
+        component:() => import (
+          '_views/manage/handlerole/add.vue'
+        )
+      },
+      {
+        path:'/editrole',
+        name:'editrole',
+        component:() => import (
+          '_views/manage/handlerole/edit.vue'
+        )
+      },
+    ]
+  },
+  {
     path: '*',
     redirect: '/',
   },

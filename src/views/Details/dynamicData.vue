@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-body">
     <Header />
     <div class="page-dynamicData">
       <Back></Back>
@@ -102,7 +102,7 @@ export default {
           categorykey:item.categorykey
         }
         let res = await getListDeviceID(params);
-
+        this.$router.push({name: 'viewDetail', params: {categorykey: item.categorykey}})
       },
       detailData(item) {
 

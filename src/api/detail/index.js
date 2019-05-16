@@ -12,7 +12,7 @@ export function getDynamicData(params) {
 
 // 获取动态数据详情
 export function getListDeviceID(params) {
-  return request.post(`${dynamicDataURL}managerServer/getListDeviceID?key=${params.key}?categorykey=${params.categorykey}`);
+  return request.post(`${dynamicDataURL}managerServer/getListDeviceID?key=${params.key}&categorykey=${params.categorykey}`);
 }
 
 

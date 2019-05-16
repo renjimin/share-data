@@ -8,7 +8,7 @@
         >
       </el-col>
       <el-col :span="6"></el-col>
-      <el-col :span="2">
+      <el-col :span="2" @click.native="backManagement">
         <i class="el-icon-setting"></i>
         <span>后台管理</span>
       </el-col>
@@ -70,6 +70,9 @@ export default {
       console.log("重置密码");
       await this.logoutAct();
       this.$router.push("/login/reset");
+    },
+    backManagement() {
+      this.$router.push("/manage");
     }
   },
   watch: {

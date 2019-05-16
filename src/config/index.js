@@ -11,7 +11,7 @@ export const dynamicDataURL = 'http://192.168.250.156:8083/' //本地测试环�
 
 // export const baseURL = 'http://192.168.101.91'     // 本地
 
-
+export const URL_CFG= 'http://192.168.250.104:8083/'
 
 
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-body">
     <Header />
     <div class="page-serverDetail">
       <Back></Back>

@@ -49,7 +49,9 @@ import {
   Main,
   Footer,
   //popover
-  Popover
+  Popover,
+  /**树 */
+  Tree,
 } from 'element-ui';
 
 Vue.use(Loading);
@@ -90,7 +92,8 @@ Vue.use(Header);
 Vue.use(Main);
 Vue.use(Footer);
 Vue.use(Popover);
-
+ //树
+ Vue.use(Tree);
 
 
 Vue.prototype.$confirm = MessageBox.confirm;

@@ -1,128 +1,378 @@
 <template>
-    <div id="map" ref="rootmap">
-
+    <div class="map-container">
+        <div id="map" ref="rootmap"></div>
     </div>
 </template>
 
 <script>
 import "ol/ol.css";
-import { Map, View } from "ol";
+import { ol,Map, View } from "ol";
+import source from "ol/source";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
+import XYZ from "ol/source/XYZ";
+import format from "ol/format";
+import ImageWMS from 'ol/source/ImageWMS'
+import TileWMS from 'ol/source/TileWMS'
+import BingMaps from 'ol/source/BingMaps'
+import Heatmap from 'ol/layer/Heatmap'
+import Tile from 'ol/layer/Tile'
+import Image from 'ol/layer/Image'
+import Vector from 'ol/layer/Vector'
+import VectorTile from 'ol/layer/VectorTile'
+import Cluster from 'ol/source/Cluster'
+// import ServerVector from 'ol/source/ServerVector'
+// import MapQuest from 'ol/source/MapQuest'
+import TileImage from 'ol/source/TileImage'
+import TileArcGISRest from "ol/source/TileArcGISRest";
+import Attribution from 'ol/control/Attribution'
+import {URL_CFG} from '@/config/index'
+/*
+ol.source.onlineMap = function (options) {
+    let options = options ? options : {};
+
+    let attributions;//右下角标识
+    if (options.attributions !== undefined) {
+        attributions = option.attributions;
+    } else if (options.mapType.indexOf("aMap") != -1) {
+        attributions = new ol.Attribution({
+            html: '&copy; <a class="ol-attribution-amap" ' + 'href="http://ditu.amap.com/">' + '高德地图</a>'
+        });
+    } else if (options.mapType.indexOf("tian") != -1) {
+        attributions = new ol.Attribution({
+            html: '&copy; <a class="ol-attribution-tianmap" ' + 'href="http://www.tianditu.cn/">' + '天地图</a>'
+        });
+    } else if (options.mapType.indexOf("geoq") != -1) {
+        attributions = new ol.Attribution({
+            html: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
+        });
+    } else if (options.mapType.indexOf("google") != -1) {
+        attributions = new ol.Attribution({
+            html: '&copy; <a class="ol-attribution-googlemap" ' + 'href="http://www.google.cn/maps">' + '谷歌地图</a>'
+        });
+    }
+    let url = mapUrl[options.mapType];
+    ol.source.XYZ.call(this, {
+        crossOrigin: 'anonymous',   //跨域
+        cacheSize: options.cacheSize,
+        projection: ol.proj.get('EPSG:3857'),
+        url: url,
+        attributions: attributions,
+        wrapX: options.wrapX !== undefined ? options.wrapX : true
+    });
+};
+ol.inherits(ol.source.onlineMap, ol.source.XYZ);//必需
+*/
+let attributions = new Attribution({
+    html: '&copy; <a class="ol-attribution-amap" ' + 'href="http://www.dx-tech.com">' + 'HGT</a>'
+});
 export default {
+  components: {
+
+  },
+  props:['viewConfig'],
   data() {
     return {
-      map: null
+      map: null,
+      viewConfig:this.viewConfig,
     };
   },
-  created(){
-    this.initMap();
-  },
   mounted() {
-    var mapcontainer = this.$refs.rootmap;
+    let mapcontainer = this.$refs.rootmap;
     this.map = new Map({
-      target: "map",
       layers: [
         new TileLayer({
-          source: new OSM()
-        })
+          title: "动态数据",
+          source: new TileArcGISRest({
+            attributions: '© <a href="http://www.dx-tech.com/">HGT</a>',
+            // tileLoadFunction: source.tileLoadFunction,
+            url: 'http://192.168.250.44:6080/arcgis/rest/services/SHCXGL/cityMgrdt/MapServer',
+            wrapX:true
+          })
+        }),
       ],
-      view: new View({
-        projection: "EPSG:4326",    //使用这个坐标系
-        center: [114.064839,22.548857],  //深圳
-        zoom: 10
-      })
+        target: 'map',
+        view: new View({
+            projection: "EPSG:4326",    //使用这个坐标系
+            center: [111.8,32.4],  //武汉
+            zoom: 12
+        })
     });
   },
+  watch:{
+    viewConfig: {
+      handler(newValue, oldValue) {
+        this.createSource(newValue)
+      },
+  　　 deep: true
+    }
+  },
   methods:{
-    initMap() {
-      var projection = ol.proj.get('EPSG:4326');
-      var projectionExtent = projection.getExtent();
+    createSource(sources, projection) {
+        let oSource;
+        let pixelRatio;
+        let url;
+        let source = sources[sources.type].source;
+        console.log(source)
 
-      var view = new ol.View({
-        projection: projection,
-        center: [114.32,30.6],
-        zoom: 10, // 当前视图级别
-        minZoom: 8,
-        maxZoom: 18
-      });
+        // debugger
+        switch (source.type) {
+            case 'ImageWMS':
+                if (!source.url || !source.params) {
+                  return;
+                }
+                oSource = new ImageWMS({
+                    url: source.url,
+                    imageLoadFunction: source.imageLoadFunction,
+                    attributions: this.createAttribution(source),
+                    crossOrigin: (typeof source.crossOrigin === 'undefined') ? 'anonymous' : source.crossOrigin,
+                    params: this.deepCopy(source.params),
+                    ratio: source.ratio
+                });
+                break;
 
-      drawSource = new ol.source.Vector();
-      drawVector = new ol.layer.Vector({
-          source: drawSource,
-          style: new ol.style.Style({
-              fill: new ol.style.Fill({
-                  color: 'rgba(255, 255, 255, 0.3)'
-              }),
-              stroke: new ol.style.Stroke({
-                  color: '#9f81c8',
-                  width: 2
-              }),
-              image: new ol.style.Circle({
-                  radius: 7,
-                  fill: new ol.style.Fill({
-                      color: '#9f81c8'
-                  })
-              })
-          })
-      });
+            case 'OSM':
+                oSource = new OSM({
+                    tileLoadFunction: source.tileLoadFunction,
+                    attributions: this.createAttribution(source),
+                    wrapX: source.wrapX !== undefined ? source.wrapX : true
+                });
 
-      drawSource.on("addfeature", function(e) {
-        selectCameras(e);
-      });
+                if (source.url) {
+                    oSource.setUrl(source.url);
+                }
 
-      var projection = ol.proj.get('EPSG:4326');
-      var projectionExtent = projection.getExtent();
-      //地图声明
-      map = new ol.Map({
-        controls: ol.control.defaults().extend([
-            new ol.control.ScaleLine()
-        ]),
-        projection: "EPSG:4326",
-        target: 'map',
-        layers: [
-          //getTdtLayer('vec_c'),
-          //getTdtLayer("cva_c"),
-          new ol.layer.Tile({
-              extent: projectionExtent,
-              source: new ol.source.TileArcGISRest({
-                url: SLDT_URL
-              })
-            })/*,
-            new ol.layer.Tile({
-              extent: projectionExtent,
-              source: new ol.source.TileArcGISRest({
-                url: SLZJ_URL
-              })
-            })*/,
-            drawVector
-        ],
-        view: view
-      });
+                break;
+            case 'TileArcGISRest':
+                if (!source.url) {
+                  return;
+                }
 
-      // 设置地图点击事件监听
-      map.on("click", function(e) {
-        var pixel = map.getEventPixel(e.originalEvent);
-        var feature = map.forEachFeatureAtPixel(e.pixel, function(feature, layer)
-        {
-          if (layer == videoLayer) {
-            return feature;
-          }
-        });
-        if (feature) {
-          let  tempobj = {};
-          let resultArr;
-          tempobj.devid = feature.id.toString();
-          videolist.push(tempobj);
+                oSource = new TileArcGISRest({
+                    attributions: this.createAttribution(source),
+                    tileLoadFunction: source.tileLoadFunction,
+                    url: source.url,
+                    wrapX: source.wrapX !== undefined ? source.wrapX : true
+                });
+
+                break;
+            case 'XYZ':
+                if (!source.url && !source.tileUrlFunction) {
+                  return;
+                }
+                oSource = new XYZ({
+                  url: source.url,
+                  attributions: this.createAttribution(source),
+                  minZoom: source.minZoom,
+                  maxZoom: source.maxZoom,
+                  projection: source.projection,
+                  tileUrlFunction: source.tileUrlFunction,
+                  tileLoadFunction: source.tileLoadFunction,
+                  wrapX: source.wrapX !== undefined ? source.wrapX : true
+                });
+                break;
         }
-      });
+
+        if (!oSource) {
+          return;
+        }
+        this.map = new Map({
+            layers: [
+              oSource
+            ],
+            target: 'map',
+            view: new View({
+                projection: "EPSG:4326",    //使用这个坐标系
+                center: [111.8,32.4],  //深圳
+                zoom: 12
+            })
+        });
+    },
+    deepCopy(oldObj) {
+        var newObj = oldObj;
+        if (oldObj && typeof oldObj === 'object') {
+            newObj = Object.prototype.toString.call(oldObj) === '[object Array]' ? [] : {};
+            for (var i in oldObj) {
+                newObj[i] = this.deepCopy(oldObj[i]);
+            }
+        }
+        return newObj;
+    },
+
+    createAttribution(source) {
+        var attributions = [];
+        if (source.attribution) {
+            // opt-out -> default tries to show an attribution
+            if (!(source.attribution === false)) { // jshint ignore:line
+                // we got some HTML so display that as the attribution
+                attributions.unshift(new Attribution({html: source.attribution}));
+            }
+        } else {
+            // try to infer automatically
+            var attrib = this.extractAttributionFromSource(source);
+            if (attrib) {
+                attributions.unshift(attrib);
+            }
+        }
+
+        return attributions;
+    },
+    extractAttributionFromSource(source) {
+        if (source && source.type) {
+            var ol3SourceInstance = source[source.type];
+            if (ol3SourceInstance) {
+                // iterate over the object's props and try
+                // to find the attribution one as it differs
+                for (var prop in ol3SourceInstance) {
+                    if (ol3SourceInstance.hasOwnProperty(prop)) {
+                        if (prop.toLowerCase().indexOf('attribution') > -1) {
+                            return source[source.type][prop];
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    },
+    createLayer(layer, projection, name, onLayerCreatedFn) {
+
+        var oLayer;
+        var type = this.detectLayerType(layer);
+        var oSource = this.createSource(layer.source, projection);
+        if (!oSource) {
+            return;
+        }
+
+        // handle function overloading. 'name' argument may be
+        // our onLayerCreateFn since name is optional
+        if (typeof(name) === 'function' && !onLayerCreatedFn) {
+            onLayerCreatedFn = name;
+            name = undefined; // reset, otherwise it'll be used later on
+        }
+
+        // Manage clustering
+        if ((type === 'Vector') && layer.clustering) {
+            oSource = new Cluster({
+                source: oSource,
+                distance: layer.clusteringDistance
+            });
+        }
+
+        var layerConfig = {};
+
+        // copy over eventual properties set on the passed layerconfig which
+        // can later be retrieved via layer.get('propName');
+        for (var property in layer) {
+            if (layer.hasOwnProperty(property) &&
+                // ignore props like source or those angular might add (starting with $)
+                // don't use startsWith as it is not supported in IE
+                property.indexOf('$', 0) !== 0 &&
+                property.indexOf('source', 0) !== 0 &&
+                property.indexOf('style', 0) !== 0
+                ) {
+                layerConfig[property] = layer[property];
+            }
+        }
+
+        layerConfig.source = oSource;
+
+        // ol.layer.Layer configuration options
+        if (isDefinedAndNotNull(layer.opacity)) {
+            layerConfig.opacity = layer.opacity;
+        }
+        if (isDefinedAndNotNull(layer.visible)) {
+            layerConfig.visible = layer.visible;
+        }
+        if (isDefinedAndNotNull(layer.extent)) {
+            layerConfig.extent = layer.extent;
+        }
+        if (isDefinedAndNotNull(layer.zIndex)) {
+            layerConfig.zIndex = layer.zIndex;
+        }
+        if (isDefinedAndNotNull(layer.minResolution)) {
+            layerConfig.minResolution = layer.minResolution;
+        }
+        if (isDefinedAndNotNull(layer.maxResolution)) {
+            layerConfig.maxResolution = layer.maxResolution;
+        }
+        if (isDefinedAndNotNull(layer.style) && type === 'TileVector') {
+            layerConfig.style = layer.style;
+        }
+
+        switch (type) {
+            case 'Image':
+                oLayer = new Image(layerConfig);
+                break;
+            case 'Tile':
+                oLayer = new Tile(layerConfig);
+                break;
+            case 'Heatmap':
+                oLayer = new Heatmap(layerConfig);
+                break;
+            case 'Vector':
+                oLayer = new Vector(layerConfig);
+                break;
+            case 'TileVector':
+                oLayer = new VectorTile(layerConfig);
+                break;
+        }
+
+        // set a layer name if given
+        if (isDefined(name)) {
+            oLayer.set('name', name);
+        } else if (isDefined(layer.name)) {
+            oLayer.set('name', layer.name);
+        }
+
+        // set custom layer properties if given
+        if (layer.customAttributes) {
+            for (var key in layer.customAttributes) {
+                oLayer.set(key, layer.customAttributes[key]);
+            }
+        }
+
+        // invoke the onSourceCreated callback
+        if (onLayerCreatedFn) {
+            onLayerCreatedFn({
+                oLayer: oLayer
+            });
+        }
+
+        return oLayer;
+    },
+    detectLayerType(layer) {
+        if (layer.type) {
+            return layer.type;
+        } else {
+            switch (layer.source.type) {
+                case 'ImageWMS':
+                    return 'Image';
+                case 'ImageStatic':
+                    return 'Image';
+                case 'GeoJSON':
+                case 'JSONP':
+                case 'TopoJSON':
+                case 'KML':
+                case 'WKT':
+                    return 'Vector';
+                case 'TileVector':
+                case 'MVT':
+                    return 'TileVector';
+                default:
+                    return 'Tile';
+            }
+        }
     }
   }
 };
 </script>
 
 <style>
-#map{height:100%;}
+.map-container, #map {
+    width: 100%;
+    height: 100%;
+}
 /*隐藏ol的一些自带元素*/
 .ol-attribution,.ol-zoom { display: none;}
 </style>
