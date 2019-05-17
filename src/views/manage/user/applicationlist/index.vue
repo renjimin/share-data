@@ -1,7 +1,7 @@
 <template>
-  <div class="manage-content">
+  <div class="application-content">
     <div>
-      <h2 class="table-name">用户申请列表</h2>
+      <h2 class="table-name">用户申请单列表</h2>
     </div>
     <div>
       <el-row>
@@ -26,6 +26,7 @@
     <div class="table-total">全部数据列表 ({{totalPage}})</div>
     <el-table
       :data="tableData"
+      :row-class-name="tableRowClassName"
       border
       style="width: 100%">
       <el-table-column
@@ -39,7 +40,7 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="status[status]"
+        prop="state"
         label="状态">
       </el-table-column>
       <el-table-column
@@ -57,9 +58,11 @@
       <el-table-column
         prop="address"
         label="操作">
-        <template slot-scope="scope">
-          <el-button @click="agreeApply(scope.row)" type="text" size="small">同意申请</el-button>
-          <el-button type="text" size="small" @click="rejectApply(scope.row)">拒绝申请</el-button>
+        <template slot-scope="tableData" >
+          <div v-if="tableData.row.status =='0'">
+            <el-button @click="agreeApply(tableData)" type="text" size="small">同意申请</el-button> |
+            <el-button class="reject-btn" type="text" size="small" @click="rejectApply(tableData)">拒绝申请</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -82,7 +85,7 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
       return {
         tableData: [],
         form:{},
-        status:[
+        statusDic:[
           '进行中',
           '已同意申请',
           '已拒绝申请'
@@ -96,6 +99,14 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
       this.initData();
     },
     methods:{
+      tableRowClassName({row, rowIndex}) {
+        if (rowIndex%2 === 1) {
+          return 'odd-row';
+        } else{
+          return 'even-row';
+        }
+        return '';
+      },
       async initData() {
         let data = {
           "pageSize":10,
@@ -108,23 +119,14 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
         const { code, list, recordCount } = res;
         if (code === '0') {
           this.tableData = list;
+          this.tableData.forEach(element => {
+            element.state = this.statusDic[element.status];
+          });
           this.totalPage = recordCount
         }
       },
       async query() {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalPage = recordCount
-        }
+        this.initData();
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -194,7 +196,7 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
       async handleCurrentChange(val) {
         let data = {
           "pageSize":10,
-          "nowPage":1,
+          "nowPage":val,
           "userName":this.form.name,
           "startTime":this.form.startTime,
           "endTime":this.form.endTime
@@ -203,6 +205,9 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
         const { code, list, recordCount } = res;
         if (code === '0') {
           this.tableData = list;
+          this.tableData.forEach(element => {
+            element.state = this.statusDic[element.status];
+          });
           this.totalPage = recordCount
         }
       }
@@ -210,7 +215,7 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
   }
 </script>
 <style lang="scss">
-.manage-content{
+.application-content{
   .table-name{
     color: #6e7073;
     font-size: 17px;
@@ -218,6 +223,17 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
     border-bottom: 1px solid #dbdbdb;
     font-weight: bold;
     margin: 0;
+  }
+  .el-table{
+    .odd-row {
+      background: #f4f5ff;
+    }
+    .even-row {
+      background: #ffffff;
+    }
+    .reject-btn{
+      margin-left: 0;
+    }
   }
   .el-form{
 

@@ -68,10 +68,21 @@ export default [
   {
     path: '/manage',
     name: 'manage',
+    redirect: { name: 'managehome' },
     component: () => import(
       '_views/manage/index.vue'
     ),
     children: [
+      {
+        path: '/managehome',
+        name: 'managehome',
+        meta:{
+          title:'首页',
+        },
+        component: () => import(
+          '_views/manage/index/index.vue'
+        ),
+      },
       {
         path: '/rolemanage',
         name: 'rolemanage',
@@ -86,7 +97,7 @@ export default [
         path:'/applicationlist',
         name:'applicationlist',
         meta:{
-          title:'用户角色管理',
+          title:'申请单列表',
         },
         component:() => import (
           '_views/manage/user/applicationlist/index.vue'

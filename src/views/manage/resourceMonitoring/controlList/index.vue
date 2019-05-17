@@ -4,7 +4,7 @@
       <h2 class="controllist-name">
         <img src="/images/manage/index/icon-bj.png">
         权限申请单
-        <button class="control_button" style="margin-top: -8px;" id="addBtn" @click="submitRole">提交</button>
+        <button class="control_button" style="margin-top: -8px;" id="addBtn" @click="submit">提交</button>
       </h2>
     </div>
     <div class="control-info">
@@ -13,7 +13,7 @@
           <p class="control-base">基本信息</p>
           <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="申请人:" prop="username">
-              <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+              <el-input type="text" v-model="ruleForm.username" autocomplete="off" readonly></el-input>
             </el-form-item>
             <el-form-item label="角色:" >
               <el-select v-model="ruleForm.roleId" placeholder="请选择角色">
@@ -24,7 +24,15 @@
         </el-col>
         <el-col :span="11">
           <p class="control-base">角色下的图层权限</p>
-          <div>无数据</div>
+          <el-tree
+            :data="treedata"
+            show-checkbox
+            ref="tree"
+            node-key="id"
+            :default-expanded-keys="[1, 1]"
+            :default-checked-keys="[5]"
+            :props="defaultProps">
+          </el-tree>
         </el-col>
       </el-row>
     </div>
@@ -32,7 +40,7 @@
 </template>
 
 <script>
-import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applicationfrom/index'
+import { categoryTree, AdduserRole } from '@/api/manage/resourceMonitoring/index'
   export default {
     data() {
       return {
@@ -51,97 +59,33 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
     },
     methods:{
       async initData() {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalPage = recordCount
-        }
+        let resall = await categoryTree();
+        this.treedata =  this.treeData(resall.data);
       },
-      async query() {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalPage = recordCount
-        }
-      },
-      agreeApply() {
-        this.$confirm('确认同意该用户的权限申请吗?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          let data = {
-            id:item.row.id,
-            type:1
-          }
-          let res = await getUserRoleApplyEdit(data);
-          const { code } = res;
-          if (code === '0') {
-            this.initData();
-            this.$message({
-              type: 'success',
-              message: '审批成功!'
-            });
-          }else{
-            this.$message({
-              type: 'warning',
-              message: '审批失败!'
-            });
-          }
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
+      /**
+       * 快速生成树形
+       */
+      treeData(data){
+        let cloneData = JSON.parse(JSON.stringify(data))    // 对源数据深度克隆
+        let tree = cloneData.filter(father=>{              //循环所有项
+          let branchArr = cloneData.filter(child=>{
+            return father.id == child.pId      //返回每一项的子级数组
           });
-        });
-      },
-      rejectApply() {
-        this.$confirm('确认拒绝该用户的权限申请吗?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          let data = {
-            id:item.row.id,
-            type:1
+          if(branchArr.length>0){
+            father.children = branchArr;    //如果存在子级，则给父级添加一个children属性，并赋值
           }
-          let res = await getUserRoleApplyEdit(data);
-          const { code } = res;
-          if (code === '0') {
-            this.initData();
-            this.$message({
-              type: 'success',
-              message: '审批成功!'
-            });
-          }else{
-            this.$message({
-              type: 'warning',
-              message: '审批失败!'
-            });
-          }
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消!'
-          });
+          return father.pId==0;      //返回第一层
         });
+        return tree     //返回树形数据
       },
+      async submit() {
+        let params = {
+          userId:'',
+          userName:'',
+          roleId:''
+        }
+        let res =  await AdduserRole(params);
+      }
     }
   }
 </script>
@@ -158,7 +102,6 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
       color: #6e7073;
       font-size: 17px;
       padding: 20px 30px 20px 0;
-      border-bottom: 1px solid #dbdbdb;
       font-weight: bold;
       margin: 0;
       img{

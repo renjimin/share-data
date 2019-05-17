@@ -8,13 +8,18 @@
         <el-col :span="22">
           <el-form ref="form" :model="form" label-width="100px" :inline="true">
             <el-form-item label="用户名:">
-              <el-input v-model="form.name"></el-input>
+              <el-input v-model="form.userName"></el-input>
             </el-form-item>
-            <el-form-item label="申请起始时间:">
-              <el-date-picker type="date" placeholder="选择日期" v-model="form.startTime" style="width: 100%;"></el-date-picker>
+            <el-form-item label="地图名称:">
+              <el-input v-model="form.layerName"></el-input>
             </el-form-item>
-            <el-form-item label="申请终止时间:">
-              <el-date-picker type="date" placeholder="选择日期" v-model="form.endTime" style="width: 100%;"></el-date-picker>
+            <el-form-item label="地图编码:">
+              <el-input v-model="form.layerId"></el-input>
+            </el-form-item>
+            <el-form-item label="是否启用:" >
+              <el-select v-model="form.enable" placeholder="请选择">
+                <el-option :label="item" :value="index" v-for="(item,index) in status" :key="index">{{item}}</el-option>
+              </el-select>
             </el-form-item>
           </el-form>
         </el-col>
@@ -76,16 +81,19 @@
 </template>
 
 <script>
-import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applicationfrom/index'
+import { getUserLayerlist } from '@/api/manage/userRights/index'
   export default {
     data() {
       return {
         tableData: [],
         form:{},
         status:[
-          '进行中',
+          '所有',
+          '申请公开中',
           '已同意申请',
-          '已拒绝申请'
+          '已拒绝申请',
+          '申请不公开中',
+          '申请已取消'
         ],
         currentPage:1,
         pageSize:10,
@@ -98,33 +106,22 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
     methods:{
       async initData() {
         let data = {
-          "pageSize":10,
           "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
+          "pageSize":this.pageSize,
+          "userName":this.form.userName,
+          "layerName":this.form.layerName,
+          "layerId":this.form.layerId,
+          "status":this.form.enable
         }
-        let res = await getUserRoleApplylist(data);
+        let res = await getUserLayerlist(data);
         const { code, list, recordCount } = res;
         if (code === '0') {
           this.tableData = list;
           this.totalPage = recordCount
         }
       },
-      async query() {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalPage = recordCount
-        }
+      query() {
+        this.initData();
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -193,13 +190,14 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
       },
       async handleCurrentChange(val) {
         let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
+          "nowPage":val,
+          "pageSize":this.pageSize,
+          "userName":this.form.userName,
+          "layerName":this.form.layerName,
+          "layerId":this.form.layerId,
+          "status":this.form.enable
         }
-        let res = await getUserRoleApplylist(data);
+        let res = await getUserLayerlist(data);
         const { code, list, recordCount } = res;
         if (code === '0') {
           this.tableData = list;

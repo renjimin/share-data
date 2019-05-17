@@ -135,6 +135,7 @@
       line-height: 34px;
       border: none;
       margin-right: 15px;
+      padding: 0 10px !important;
     }
     .is-active{
       background: #bd5795;

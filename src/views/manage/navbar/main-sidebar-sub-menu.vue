@@ -29,44 +29,42 @@ export default {
     return {
         menu:[
           {
-            "menuId":1,"parentId":0,"parentName":null,"name":"用户管理","url":null,"perms":null,"type":0,"icon":"/images/manage/index/icon-权限信息管理.png","orderNum":0,"open":null,
+            "menuId":1,"name":"用户管理","url":null,"icon":"/images/manage/index/icon-权限信息管理.png",
             "list":[
-              {"menuId":1,"parentId":1,"parentName":null,"name":"用户角色管理","url":"rolemanage","perms":null,"type":1,"icon":"admin","orderNum":1,"open":null,"list":null},
-              {"menuId":2,"parentId":1,"parentName":null,"name":"角色列表","url":"rolelist","perms":null,"type":1,"icon":"role","orderNum":2,"open":null,"list":null},
-              {"menuId":3,"parentId":1,"parentName":null,"name":"申请单列表","url":"applicationlist","perms":null,"type":1,"icon":"menu","orderNum":3,"open":null,"list":null},
-              {"menuId":4,"parentId":1,"parentName":null,"name":"权限时间管理","url":"permissiontime","perms":null,"type":1,"icon":"sql","orderNum":4,"open":null,"list":null}
+              {"menuId":1,"name":"用户角色管理","url":"rolemanage"},
+              {"menuId":2,"name":"角色列表","url":"rolelist"},
+              {"menuId":3,"name":"申请单列表","url":"applicationlist"},
+              {"menuId":4,"name":"权限时间管理","url":"permissiontime"}
               ]
           },
           {
-            "menuId":2,"parentId":0,"parentName":null,"name":"用户权限分配","url":null,"perms":null,"type":0,"icon":"/images/manage/index/icon-地图配置.png","orderNum":0,"open":null,
+            "menuId":2,"name":"用户权限分配","url":null,"icon":"/images/manage/index/icon-地图配置.png",
             "list":[
-              {"menuId":1,"parentId":1,"parentName":null,"name":"资源权限分配","url":"resourcePermissions","perms":null,"type":1,"icon":"admin","orderNum":1,"open":null,"list":null},
-              {"menuId":2,"parentId":1,"parentName":null,"name":"资源权限审核","url":"permissionAudit","perms":null,"type":1,"icon":"role","orderNum":2,"open":null,"list":null},
-              {"menuId":3,"parentId":1,"parentName":null,"name":"资源权限列表","url":"resourcePermissionslist","perms":null,"type":1,"icon":"menu","orderNum":3,"open":null,"list":null}
+              {"menuId":1,"name":"资源权限分配","url":"resourcePermissions"},
+              {"menuId":2,"name":"资源权限审核","url":"permissionAudit"},
+              {"menuId":3,"name":"资源权限列表","url":"resourcePermissionslist"}
               ]
           },
           {
-            "menuId":3,"parentId":0,"parentName":null,"name":"资源监控","url":null,"perms":null,"type":0,"icon":"/images/manage/index/icon-权限申请.png","orderNum":0,"open":null,
+            "menuId":3,"name":"资源监控","url":null,"icon":"/images/manage/index/icon-权限申请.png",
             "list":[
-              {"menuId":1,"parentId":1,"parentName":null,"name":"资源访问控制列表","url":"controlList","perms":null,"type":1,"icon":"admin","orderNum":1,"open":null,"list":null},
-              {"menuId":2,"parentId":1,"parentName":null,"name":"资源访问信息列表","url":"informationList","perms":null,"type":1,"icon":"role","orderNum":2,"open":null,"list":null},
-              {"menuId":3,"parentId":1,"parentName":null,"name":"资源访问统计","url":"accessStatistics","perms":null,"type":1,"icon":"menu","orderNum":3,"open":null,"list":null}
+              {"menuId":1,"name":"资源访问控制列表","url":"controlList"},
+              {"menuId":2,"name":"资源访问信息列表","url":"informationList"},
+              {"menuId":3,"name":"资源访问统计","url":"accessStatistics"}
               ]
+          },
+          {
+            "menuId":3,"name":"条目管理","url":null,"icon":"/images/manage/index/icon-权限申请.png",
+            "list":[
+              {"menuId":1,"name":"资源访问控制列表","url":"controlList"},
+              {"menuId":2,"name":"资源访问信息列表","url":"informationList"},
+              {"menuId":3,"name":"资源访问统计","url":"accessStatistics"}
+            ]
           }
         ]
     }
   },
   computed: {
-    sidebarLayoutSkin: {
-      get () { return this.$store.state.common.sidebarLayoutSkin }
-    },
-    sidebarFold: {
-      get () { return this.$store.state.common.sidebarFold }
-    },
-    menuList: {
-      get () { return this.$store.state.common.menuList },
-      set (val) { this.$store.commit('common/updateMenuList', val) }
-    },
     menuActiveName: {
       get () { return this.$store.state.common.menuActiveName },
       set (val) { this.$store.commit('common/updateMenuActiveName', val) }
