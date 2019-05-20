@@ -93,15 +93,18 @@ import { getUserlistAuth, getDelayAuth } from '@/api/manage/permissiontime/index
       this.initData();
     },
     methods:{
-      async initData() {
+      async initData(page=1) {
+        let startTime = this.form.startTime || [];
+        let endTime = this.form.endTime || [];
+
         let data = {
-          "nowPage":1,
+          "nowPage":page,
           "pageSize":this.pageSize,
           "userName":'',
-          "startS":this.form.startTime[0],
-          "startE":this.form.startTime[1],
-          "endS":this.form.endTime[0],
-          "endE":this.form.endTime[1],
+          "startS":new Date(startTime[0]).getTime(),
+          "startE":new Date(startTime[1]).getTime(),
+          "endS":new Date(endTime[0]).getTime(),
+          "endE":new Date(endTime[1]).getTime(),
         }
         let res = await getUserlistAuth(data);
         const { code, list, recordCount } = res;
@@ -111,21 +114,7 @@ import { getUserlistAuth, getDelayAuth } from '@/api/manage/permissiontime/index
         }
       },
       async query() {
-        let data = {
-          "nowPage":1,
-          "pageSize":this.pageSize,
-          "userName":'',
-          "startS":this.form.startTime[0],
-          "startE":this.form.startTime[1],
-          "endS":this.form.endTime[0],
-          "endE":this.form.endTime[1],
-        }
-        let res = await getUserlistAuth(data);
-        const { code, list, recordCount } = res;
-        if ( code === '0' ) {
-          this.tableData = list;
-          this.totalpage = recordCount;
-        }
+        this.initData();
       },
       editManage() {
         this.$confirm('确认要延长用户权限吗？', '提示', {
@@ -161,21 +150,7 @@ import { getUserlistAuth, getDelayAuth } from '@/api/manage/permissiontime/index
         console.log(`每页 ${val} 条`);
       },
       async handleCurrentChange(val) {
-        let data = {
-          "nowPage":val,
-          "pageSize":this.pageSize,
-          "userName":'',
-          "startS":this.form.startTime[0],
-          "startE":this.form.startTime[1],
-          "endS":this.form.endTime[0],
-          "endE":this.form.endTime[1],
-        }
-        let res = await getUserlistAuth(data);
-        const { code, list, recordCount } = res;
-        if ( code === '0' ) {
-          this.tableData = list;
-          this.totalpage = recordCount;
-        }
+        this.initData(val)
       }
     }
   }

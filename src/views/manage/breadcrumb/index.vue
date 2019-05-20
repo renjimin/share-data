@@ -23,6 +23,7 @@
         </el-card>
       </el-tab-pane>
     </el-tabs>
+    <Footer />
     <!-- 主入口标签页 e -->
 
     <!-- <el-card v-else :body-style="siteContentViewHeight">
@@ -36,6 +37,7 @@
 
 <script>
   // import { isURL } from '@/utils/validate'
+  import Footer from '@/components/footer/footer'
   export default {
     data () {
       return {
@@ -66,7 +68,13 @@
         return { minHeight: height + 'px' }
       }
     },
+    created() {
+      // this.init();
+    },
     methods: {
+      // init() {
+      //   console.log(this.$store.state.common.mainTabs)
+      // },
       // tabs, 选中tab
       selectedTabHandle (tab) {
         tab = this.mainTabs.filter(item => item.name === tab.name)
@@ -112,6 +120,9 @@
           this.$router.push({ name: tab.name, query: tab.query, params: tab.params })
         })
       }
+    },
+    components:{
+      Footer
     }
   }
 </script>
@@ -137,12 +148,18 @@
       margin-right: 15px;
       padding: 0 10px !important;
     }
+    .el-tabs__item:first-child{
+      span{
+        display: none;
+      }
+    }
     .is-active{
       background: #bd5795;
       color: #fff;
     }
   }
   .el-card{
+    min-height: 775px;
     border-top: 3px solid #c387bc;
     .el-card__body{
       padding: 0 20px 20px 20px;

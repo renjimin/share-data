@@ -80,12 +80,12 @@ import {getrolelist,setDeleteRole} from '@/api/manage/rolelist/index'
       }
     },
     created() {
-      this.initData();
+      this.initData(1);
     },
     methods:{
-      async initData() {
+      async initData(page) {
         let data = {
-          "nowPage":1,
+          "nowPage":page,
           "pageSize":this.pageSize,
           "roleCode":this.form.roleCode,
           "username":this.form.roleName
@@ -104,24 +104,12 @@ import {getrolelist,setDeleteRole} from '@/api/manage/rolelist/index'
         this.$router.push('/addrole');
       },
       async query() {
-        let data = {
-          "nowPage":1,
-          "pageSize":this.pageSize,
-          "roleCode":this.form.roleCode,
-          "username":this.form.roleName
-        }
-        let res = await getrolelist(data);
-        const { code } = res;
-        if (code === '0') {
-          this.tableData = res.data;
-          this.totalpage = res.recordCount;
-        }
+        this.initData(1)
       },
       /**
        * 编辑用户
        */
       editUser(item) {
-        debugger
         this.$router.push({name:'editrole',query:{id:item.row.id,roleCode:item.row.roleCode,roleName:item.row.roleName,categoryCodes:item.row.telephone,posIds:item.row.posIds}});
       },
       /**
@@ -139,7 +127,7 @@ import {getrolelist,setDeleteRole} from '@/api/manage/rolelist/index'
           let res = await setDeleteRole(data);
           const { code } = res;
           if (code === '0') {
-            this.initData();
+            this.initData(1);
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -158,18 +146,7 @@ import {getrolelist,setDeleteRole} from '@/api/manage/rolelist/index'
         });
       },
       async handleCurrentChange(val) {
-        let data = {
-          "nowPage":1,
-          "pageSize":this.pageSize,
-          "roleCode":this.form.roleCode,
-          "username":this.form.roleName
-        }
-        let res = await getrolelist(data);
-        const { code } = res;
-        if (code === '0') {
-          this.tableData = res.data;
-          this.totalpage = res.recordCount;
-        }
+        this.initData(val)
       }
     }
   }

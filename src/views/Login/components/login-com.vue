@@ -35,7 +35,7 @@
           v-model="formData.code"
           clearable
           placeholder="请输入验证码"
-          type="password"
+          type="text"
         >
         </el-input>
         <img :src="currentsrc" @click="refresh">

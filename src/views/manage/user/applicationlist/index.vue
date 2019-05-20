@@ -107,13 +107,20 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
         }
         return '';
       },
-      async initData() {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
+      async initData(page = 1) {
+        let data  = {
+          "nowPage":page,
+          "pageSize":this.pageSize,
           "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
+          "startTime":new Date(this.form.startTime).getTime(),
+          "endTime":new Date(this.form.endTime).getTime()
+        }
+        if (data.startTime > data.endTime) {
+          this.$message({
+            type: 'warning',
+            message: '开始时间大于结束时间!'
+          });
+          return;
         }
         let res = await getUserRoleApplylist(data);
         const { code, list, recordCount } = res;
@@ -131,15 +138,18 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
-      agreeApply() {
+      agreeApply(item) {
         this.$confirm('确认同意该用户的权限申请吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async () => {
           let data = {
-            id:item.row.id,
-            type:1
+            "id": item.row.id,
+            "roleId": item.row.roleId,
+            "type": 1,
+            "userId": item.row.userId,
+            "userName": item.row.userName
           }
           let res = await getUserRoleApplyEdit(data);
           const { code } = res;
@@ -162,15 +172,18 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
           });
         });
       },
-      rejectApply() {
+      rejectApply(item) {
         this.$confirm('确认拒绝该用户的权限申请吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async () => {
           let data = {
-            id:item.row.id,
-            type:1
+            "id": item.row.id,
+            "roleId": item.row.roleId,
+            "type": 0,
+            "userId": item.row.userId,
+            "userName": item.row.userName
           }
           let res = await getUserRoleApplyEdit(data);
           const { code } = res;
@@ -194,22 +207,7 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
         });
       },
       async handleCurrentChange(val) {
-        let data = {
-          "pageSize":10,
-          "nowPage":val,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.tableData.forEach(element => {
-            element.state = this.statusDic[element.status];
-          });
-          this.totalPage = recordCount
-        }
+        this.initData(val);
       }
     }
   }

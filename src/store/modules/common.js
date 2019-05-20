@@ -15,7 +15,16 @@ export default {
     // 内容, 是否需要刷新
     contentIsNeedRefresh: false,
     // 主入口标签页
-    mainTabs: [],
+    mainTabs: [
+      {
+        iframeUrl: "",
+        menuId: "managehome",
+        name: "managehome",
+        params: null,
+        query: null,
+        title: "首页"
+      }
+    ],
     mainTabsActiveName: ''
   },
   mutations: {

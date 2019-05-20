@@ -44,7 +44,6 @@ import { getAllRole, seteditUser } from '@/api/manage/rolemanage/index'
     },
     methods:{
       async initData() {
-        console.log(this.ruleForm)
         let res = await getAllRole();
         const { code } = res;
         if (code === '0') {

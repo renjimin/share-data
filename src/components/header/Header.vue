@@ -90,6 +90,7 @@ export default {
     padding: 5px;
   }
   .el-col-2{
+    cursor: pointer;
     color: #ffffff;
     img{
       height: 2rem;

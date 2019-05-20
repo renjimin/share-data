@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { setEditRole } from '@/api/manage/rolelist/index'
+import { setEditRole, currentRoleCategory } from '@/api/manage/rolelist/index'
 import { getAllTree } from '@/api/index/index'
   export default {
     data() {
@@ -69,8 +69,8 @@ import { getAllTree } from '@/api/index/index'
       async initData() {
         let resall = await getAllTree();
         this.treedata =  this.treeData(resall.data);
-        console.log(this.treedata)
-        let params = 0;
+        let res =  await currentRoleCategory({roleId:this.$route.query.id});
+        this.$refs.tree.setCheckedKeys(res.data)
       },
       /**
        * 快速生成树形

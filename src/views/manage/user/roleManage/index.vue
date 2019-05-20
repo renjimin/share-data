@@ -76,16 +76,16 @@ import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
       }
     },
     created() {
-      this.initData();
+      this.initData(1);
     },
     methods:{
       /**
        * 初始化数据
        */
-      async initData() {
+      async initData(page) {
         let data = {
+          "nowPage":page,
           "pageSize":this.pagesize,
-          "nowPage":1,
           "username":this.form.name
         }
         let res = await getUselist(data);
@@ -105,17 +105,7 @@ import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
        * 查询
        */
       async query() {
-        let data = {
-          "pageSize":this.pagesize,
-          "nowPage":1,
-          "username":this.form.name
-        }
-        let res = await getUselist(data);
-        const { code, list} = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalpage = res.recordCount;
-        }
+        this.initData(1);
       },
       /**
        * 编辑用户
@@ -138,7 +128,7 @@ import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
           let res = await setDeleteUser(data);
           const { code } = res;
           if (code === '0') {
-            this.initData();
+            this.initData(1);
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -163,17 +153,7 @@ import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
        * 修改页数
        */
       async handleCurrentChange(val) {
-        let data = {
-          "pageSize":this.pagesize,
-          "nowPage":val,
-          "username":this.form.name
-        }
-        let res = await getUselist(data);
-        const { code, list} = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalpage = res.recordCount;
-        }
+        this.initData(val)
       }
     }
   }

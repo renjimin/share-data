@@ -20,3 +20,9 @@ export function setEditRole(params) {
 export function setDeleteRole(params) {
   return request.post('/datashare/b/role/deleteBatch',params)
 }
+
+
+// 获取当前角色下的栏目数据
+export function currentRoleCategory(params) {
+  return request.get('/datashare/b/role/rolecategory',{params})
+}

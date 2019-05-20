@@ -107,7 +107,7 @@ export default [
         path:'/permissiontime',
         name:'permissiontime',
         meta:{
-          title:'用户角色管理',
+          title:'权限时间管理',
         },
         component:() => import (
           '_views/manage/user/permissiontime/index.vue'
