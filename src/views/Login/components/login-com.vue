@@ -56,6 +56,7 @@
 <script>
 import { useLogin } from "@/api/login/index";
 import { mapActions } from "vuex";
+import { guid } from "@/libs/utils"
 import mixin from "./mixin";
 export default {
   name: "loginCom",
@@ -77,7 +78,9 @@ export default {
     return {
       btnLoading: false,
       formData: {},
-      currentsrc:'http://192.168.99.128:8083/datashare/code',
+      randomCode:'',
+      currentsrc:'',
+
       // rules: {
       //   phone: [
       //     {
@@ -97,22 +100,31 @@ export default {
       // }
     };
   },
+  created() {
+    this.initData();
+  },
   methods: {
     ...mapActions("user", ["loginAct"]),
+    initData() {
+      this.randomCode=guid();
+      this.currentsrc=`http://192.168.99.128:8083/datashare/code?randomCode=${this.randomCode}`;
+    },
     login() {
       this.$refs["ruleForm"].validate(async valid => {
         if (valid) {
           this.btnLoading = true;
           this.$global.openLoading("登录中...");
           try {
-            let data = {
+            let parms = {
               username:this.formData.phone,
               password:this.formData.password,
+              randomCode:this.randomCode,
               code:this.formData.code
             }
-            let res =  await useLogin(data);
-            const {status} = res;
-            if (status === 'success') {
+            let res =  await useLogin(parms);
+            const { code, data } = res;
+            if (code === '0') {
+              localStorage.setItem('userInfo',JSON.stringify(data))
               this.$router.push("/dashboard");
               this.$global.closeLoading();
             }
@@ -130,15 +142,9 @@ export default {
       });
     },
     refresh() {
-      this.currentsrc=`http://192.168.99.128:8083/datashare/code?t=${new Date()}`;
+      this.randomCode = guid()
+      this.currentsrc=`http://192.168.99.128:8083/datashare/code?randomCode=${this.randomCode}&t=${new Date()}`;
     },
-    watchChanged() {
-      const { password, phone } = this.userInput;
-      this.formData = {
-        password,
-        phone
-      };
-    }
   }
 };
 </script>
