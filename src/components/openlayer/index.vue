@@ -182,7 +182,6 @@ export default {
           oProjection = getProjection(view.projection);
           break;
       }
-
       return oProjection;
     },
     createSource(sources, projection) {
@@ -190,64 +189,61 @@ export default {
         let pixelRatio;
         let url;
         let source = sources[sources.type].source;
-        console.log(source)
 
-        // debugger
         switch (source.type) {
-            case 'ImageWMS':
-                if (!source.url || !source.params) {
-                  return;
-                }
-                oSource = new ImageWMS({
-                    url: source.url,
-                    imageLoadFunction: source.imageLoadFunction,
-                    attributions: this.createAttribution(source),
-                    crossOrigin: (typeof source.crossOrigin === 'undefined') ? 'anonymous' : source.crossOrigin,
-                    params: this.deepCopy(source.params),
-                    ratio: source.ratio
-                });
-                break;
+          case 'ImageWMS':
+            if (!source.url || !source.params) {
+              return;
+            }
+            oSource = new ImageWMS({
+                url: source.url,
+                imageLoadFunction: source.imageLoadFunction,
+                attributions: this.createAttribution(source),
+                crossOrigin: (typeof source.crossOrigin === 'undefined') ? 'anonymous' : source.crossOrigin,
+                params: this.deepCopy(source.params),
+                ratio: source.ratio
+            });
+            break;
 
-            case 'OSM':
-                oSource = new OSM({
-                  tileLoadFunction: source.tileLoadFunction,
-                  attributions: this.createAttribution(source),
-                  wrapX: source.wrapX !== undefined ? source.wrapX : true
-                });
+          case 'OSM':
+            oSource = new OSM({
+              tileLoadFunction: source.tileLoadFunction,
+              attributions: this.createAttribution(source),
+              wrapX: source.wrapX !== undefined ? source.wrapX : true
+            });
 
-                if (source.url) {
-                  oSource.setUrl(source.url);
-                }
+            if (source.url) {
+              oSource.setUrl(source.url);
+            }
 
-                break;
-            case 'TileArcGISRest':
-                if (!source.url) {
-                  return;
-                }
+            break;
+          case 'TileArcGISRest':
+            if (!source.url) {
+              return;
+            }
+            oSource = new TileArcGISRest({
+              attributions: this.createAttribution(source),
+              tileLoadFunction: source.tileLoadFunction,
+              url: source.url,
+              wrapX: source.wrapX !== undefined ? source.wrapX : true
+            });
 
-                oSource = new TileArcGISRest({
-                  attributions: this.createAttribution(source),
-                  tileLoadFunction: source.tileLoadFunction,
-                  url: source.url,
-                  wrapX: source.wrapX !== undefined ? source.wrapX : true
-                });
-
-                break;
-            case 'XYZ':
-                if (!source.url && !source.tileUrlFunction) {
-                  return;
-                }
-                oSource = new XYZ({
-                  url: source.url,
-                  attributions: this.createAttribution(source),
-                  minZoom: source.minZoom,
-                  maxZoom: source.maxZoom,
-                  projection: source.projection,
-                  tileUrlFunction: source.tileUrlFunction,
-                  tileLoadFunction: source.tileLoadFunction,
-                  wrapX: source.wrapX !== undefined ? source.wrapX : true
-                });
-                break;
+            break;
+          case 'XYZ':
+            if (!source.url && !source.tileUrlFunction) {
+              return;
+            }
+            oSource = new XYZ({
+              url: source.url,
+              attributions: this.createAttribution(source),
+              minZoom: source.minZoom,
+              maxZoom: source.maxZoom,
+              projection: source.projection,
+              tileUrlFunction: source.tileUrlFunction,
+              tileLoadFunction: source.tileLoadFunction,
+              wrapX: source.wrapX !== undefined ? source.wrapX : true
+            });
+            break;
         }
 
         if (!oSource) {
