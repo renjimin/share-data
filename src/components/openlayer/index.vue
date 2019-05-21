@@ -345,23 +345,23 @@ export default {
         if (layer.type) {
           return layer.type;
         } else {
-            switch (layer.source.type) {
-              case 'ImageWMS':
-                return 'Image';
-              case 'ImageStatic':
-                return 'Image';
-              case 'GeoJSON':
-              case 'JSONP':
-              case 'TopoJSON':
-              case 'KML':
-              case 'WKT':
-                return 'Vector';
-              case 'TileVector':
-              case 'MVT':
-                return 'TileVector';
-              default:
-                return 'Tile';
-            }
+          switch (layer.source.type) {
+            case 'ImageWMS':
+              return 'Image';
+            case 'ImageStatic':
+              return 'Image';
+            case 'GeoJSON':
+            case 'JSONP':
+            case 'TopoJSON':
+            case 'KML':
+            case 'WKT':
+              return 'Vector';
+            case 'TileVector':
+            case 'MVT':
+              return 'TileVector';
+            default:
+              return 'Tile';
+          }
         }
     }
   }
@@ -370,9 +370,11 @@ export default {
 
 <style>
 .map-container, #map {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 /*隐藏ol的一些自带元素*/
-.ol-attribution,.ol-zoom { display: none;}
+.ol-attribution,.ol-zoom {
+  display: none;
+}
 </style>
