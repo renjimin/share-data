@@ -32,8 +32,8 @@ function errorLog(data, config) {
 }
 
 
-const reLogin = ['GW1004']
-const whiteList = ['GW0000', 'GW0001', 'GW0002', '0','SUCCESS'];
+const reLogin = ['1000000']
+const whiteList = ['0','SUCCESS'];
 
 // 创建axios实例
 const ajax = axios.create({
@@ -63,14 +63,14 @@ ajax.interceptors.response.use(response => {
   if (whiteList.includes(data.code) || whiteList.includes(data.status)) {
     return response.data
   } else {
-    let errorMsg = data.message;
+    let errorMsg = data.msg;
     if (reLogin.includes(data.code) && flag) {
       store.dispatch('user/logoutAct');
       flag = false;
       MessageBox.alert(errorMsg, '警告', {
         confirmButtonText: '确定',
         callback: () => {
-          router.push("/"); //登录页面
+          router.push("/login"); //登录页面
           flag = true;
         }
       });

@@ -6,7 +6,11 @@
 
 <script>
 import "ol/ol.css";
-import { ol,Map, View } from "ol";
+import Map from 'ol/Map'
+import View from 'ol/View'
+import {get as getProjection,Projection} from 'ol/proj';
+import {defaults as defaultControls} from 'ol/control';
+import {defaults as defaultInteractions, DragAndDrop} from 'ol/interaction.js';
 import source from "ol/source";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
@@ -107,7 +111,80 @@ export default {
   　　 deep: true
     }
   },
+  created() {
+    this.initMap();
+  },
   methods:{
+    initMap() {
+      let controls = defaultControls(defaults.controls);
+      let interactions = defaultInteractions(defaults.interactions);
+      let view = createView(defaults.view);
+      let map = new ol.Map({
+          target: element[0],
+          controls: controls,
+          interactions: interactions,
+          renderer: defaults.renderer,
+          view: view,
+          loadTilesWhileAnimating: defaults.loadTilesWhileAnimating,
+          loadTilesWhileInteracting: defaults.loadTilesWhileInteracting
+      });
+      if (!attrs.customLayers) {
+          let l = {
+              type: 'Tile',
+              source: {
+                  type: 'OSM'
+              }
+          };
+          let layer = createLayer(l, view.getProjection(), 'default');
+          map.addLayer(layer);
+          map.set('default', true);
+      }
+    },
+    createView(view) {
+      let projection = createProjection(view);
+
+      let viewConfig = {
+        projection: projection,
+        maxZoom: view.maxZoom,
+        minZoom: view.minZoom
+      };
+
+      if (view.center) {
+        viewConfig.center = view.center;
+      }
+      if (view.extent) {
+        viewConfig.extent = view.extent;
+      }
+      if (view.zoom) {
+        viewConfig.zoom = view.zoom;
+      }
+      if (view.resolutions) {
+        viewConfig.resolutions = view.resolutions;
+      }
+
+      return new View(viewConfig);
+    },
+    createProjection(view) {
+      let oProjection;
+
+      switch (view.projection) {
+        case 'pixel':
+          if (!view.extent) {
+            return;
+          }
+          oProjection = Projection({
+            code: 'pixel',
+            units: 'pixels',
+            extent: view.extent
+          });
+          break;
+        default:
+          oProjection = getProjection(view.projection);
+          break;
+      }
+
+      return oProjection;
+    },
     createSource(sources, projection) {
         let oSource;
         let pixelRatio;
@@ -189,10 +266,10 @@ export default {
         });
     },
     deepCopy(oldObj) {
-        var newObj = oldObj;
+        let newObj = oldObj;
         if (oldObj && typeof oldObj === 'object') {
             newObj = Object.prototype.toString.call(oldObj) === '[object Array]' ? [] : {};
-            for (var i in oldObj) {
+            for (let i in oldObj) {
               newObj[i] = this.deepCopy(oldObj[i]);
             }
         }
@@ -200,7 +277,7 @@ export default {
     },
 
     createAttribution(source) {
-        var attributions = [];
+        let attributions = [];
         if (source.attribution) {
             // opt-out -> default tries to show an attribution
             if (!(source.attribution === false)) { // jshint ignore:line
@@ -209,7 +286,7 @@ export default {
             }
         } else {
             // try to infer automatically
-            var attrib = this.extractAttributionFromSource(source);
+            let attrib = this.extractAttributionFromSource(source);
             if (attrib) {
               attributions.unshift(attrib);
             }
@@ -219,11 +296,11 @@ export default {
     },
     extractAttributionFromSource(source) {
         if (source && source.type) {
-            var ol3SourceInstance = source[source.type];
+            let ol3SourceInstance = source[source.type];
             if (ol3SourceInstance) {
               // iterate over the object's props and try
               // to find the attribution one as it differs
-              for (var prop in ol3SourceInstance) {
+              for (let prop in ol3SourceInstance) {
                 if (ol3SourceInstance.hasOwnProperty(prop)) {
                   if (prop.toLowerCase().indexOf('attribution') > -1) {
                     return source[source.type][prop];
@@ -237,9 +314,9 @@ export default {
     },
     createLayer(layer, projection, name, onLayerCreatedFn) {
 
-        var oLayer;
-        var type = this.detectLayerType(layer);
-        var oSource = this.createSource(layer.source, projection);
+        let oLayer;
+        let type = this.detectLayerType(layer);
+        let oSource = this.createSource(layer.source, projection);
         if (!oSource) {
             return;
         }
@@ -259,11 +336,11 @@ export default {
           });
         }
 
-        var layerConfig = {};
+        let layerConfig = {};
 
         // copy over eventual properties set on the passed layerconfig which
         // can later be retrieved via layer.get('propName');
-        for (var property in layer) {
+        for (let property in layer) {
           if (layer.hasOwnProperty(property) &&
             // ignore props like source or those angular might add (starting with $)
             // don't use startsWith as it is not supported in IE
@@ -319,15 +396,15 @@ export default {
         }
 
         // set a layer name if given
-        if (isDefined(name)) {
+        if (!name) {
           oLayer.set('name', name);
-        } else if (isDefined(layer.name)) {
+        } else if (!layer.name) {
           oLayer.set('name', layer.name);
         }
 
         // set custom layer properties if given
         if (layer.customAttributes) {
-          for (var key in layer.customAttributes) {
+          for (let key in layer.customAttributes) {
             oLayer.set(key, layer.customAttributes[key]);
           }
         }
@@ -342,27 +419,27 @@ export default {
       return oLayer;
     },
     detectLayerType(layer) {
-        if (layer.type) {
-          return layer.type;
-        } else {
-          switch (layer.source.type) {
-            case 'ImageWMS':
-              return 'Image';
-            case 'ImageStatic':
-              return 'Image';
-            case 'GeoJSON':
-            case 'JSONP':
-            case 'TopoJSON':
-            case 'KML':
-            case 'WKT':
-              return 'Vector';
-            case 'TileVector':
-            case 'MVT':
-              return 'TileVector';
-            default:
-              return 'Tile';
-          }
+      if (layer.type) {
+        return layer.type;
+      } else {
+        switch (layer.source.type) {
+          case 'ImageWMS':
+            return 'Image';
+          case 'ImageStatic':
+            return 'Image';
+          case 'GeoJSON':
+          case 'JSONP':
+          case 'TopoJSON':
+          case 'KML':
+          case 'WKT':
+            return 'Vector';
+          case 'TileVector':
+          case 'MVT':
+            return 'TileVector';
+          default:
+            return 'Tile';
         }
+      }
     }
   }
 };
