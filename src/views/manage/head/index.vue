@@ -16,6 +16,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
+import { useLogout } from '@/api/login/index'
 export default {
   data() {
     return {
@@ -42,7 +43,8 @@ export default {
       }
       this.breadcrumbList = matchedList;
     },
-    logout() {
+    async logout() {
+      await useLogout();
       this.$router.push('/')
     },
     handleCommand(command) {

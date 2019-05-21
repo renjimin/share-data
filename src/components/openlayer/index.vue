@@ -133,13 +133,13 @@ export default {
 
             case 'OSM':
                 oSource = new OSM({
-                    tileLoadFunction: source.tileLoadFunction,
-                    attributions: this.createAttribution(source),
-                    wrapX: source.wrapX !== undefined ? source.wrapX : true
+                  tileLoadFunction: source.tileLoadFunction,
+                  attributions: this.createAttribution(source),
+                  wrapX: source.wrapX !== undefined ? source.wrapX : true
                 });
 
                 if (source.url) {
-                    oSource.setUrl(source.url);
+                  oSource.setUrl(source.url);
                 }
 
                 break;
@@ -149,10 +149,10 @@ export default {
                 }
 
                 oSource = new TileArcGISRest({
-                    attributions: this.createAttribution(source),
-                    tileLoadFunction: source.tileLoadFunction,
-                    url: source.url,
-                    wrapX: source.wrapX !== undefined ? source.wrapX : true
+                  attributions: this.createAttribution(source),
+                  tileLoadFunction: source.tileLoadFunction,
+                  url: source.url,
+                  wrapX: source.wrapX !== undefined ? source.wrapX : true
                 });
 
                 break;
@@ -182,9 +182,9 @@ export default {
             ],
             target: 'map',
             view: new View({
-                projection: "EPSG:4326",    //使用这个坐标系
-                center: [111.8,32.4],  //深圳
-                zoom: 12
+              projection: "EPSG:4326",    //使用这个坐标系
+              center: [111.8,32.4],  //深圳
+              zoom: 12
             })
         });
     },
@@ -193,7 +193,7 @@ export default {
         if (oldObj && typeof oldObj === 'object') {
             newObj = Object.prototype.toString.call(oldObj) === '[object Array]' ? [] : {};
             for (var i in oldObj) {
-                newObj[i] = this.deepCopy(oldObj[i]);
+              newObj[i] = this.deepCopy(oldObj[i]);
             }
         }
         return newObj;
@@ -204,32 +204,32 @@ export default {
         if (source.attribution) {
             // opt-out -> default tries to show an attribution
             if (!(source.attribution === false)) { // jshint ignore:line
-                // we got some HTML so display that as the attribution
-                attributions.unshift(new Attribution({html: source.attribution}));
+              // we got some HTML so display that as the attribution
+              attributions.unshift(new Attribution({html: source.attribution}));
             }
         } else {
             // try to infer automatically
             var attrib = this.extractAttributionFromSource(source);
             if (attrib) {
-                attributions.unshift(attrib);
+              attributions.unshift(attrib);
             }
         }
 
-        return attributions;
+      return attributions;
     },
     extractAttributionFromSource(source) {
         if (source && source.type) {
             var ol3SourceInstance = source[source.type];
             if (ol3SourceInstance) {
-                // iterate over the object's props and try
-                // to find the attribution one as it differs
-                for (var prop in ol3SourceInstance) {
-                    if (ol3SourceInstance.hasOwnProperty(prop)) {
-                        if (prop.toLowerCase().indexOf('attribution') > -1) {
-                            return source[source.type][prop];
-                        }
-                    }
+              // iterate over the object's props and try
+              // to find the attribution one as it differs
+              for (var prop in ol3SourceInstance) {
+                if (ol3SourceInstance.hasOwnProperty(prop)) {
+                  if (prop.toLowerCase().indexOf('attribution') > -1) {
+                    return source[source.type][prop];
+                  }
                 }
+              }
             }
         }
 
@@ -247,16 +247,16 @@ export default {
         // handle function overloading. 'name' argument may be
         // our onLayerCreateFn since name is optional
         if (typeof(name) === 'function' && !onLayerCreatedFn) {
-            onLayerCreatedFn = name;
-            name = undefined; // reset, otherwise it'll be used later on
+          onLayerCreatedFn = name;
+          name = undefined; // reset, otherwise it'll be used later on
         }
 
         // Manage clustering
         if ((type === 'Vector') && layer.clustering) {
-            oSource = new Cluster({
-                source: oSource,
-                distance: layer.clusteringDistance
-            });
+          oSource = new Cluster({
+            source: oSource,
+            distance: layer.clusteringDistance
+          });
         }
 
         var layerConfig = {};
@@ -264,103 +264,103 @@ export default {
         // copy over eventual properties set on the passed layerconfig which
         // can later be retrieved via layer.get('propName');
         for (var property in layer) {
-            if (layer.hasOwnProperty(property) &&
-                // ignore props like source or those angular might add (starting with $)
-                // don't use startsWith as it is not supported in IE
-                property.indexOf('$', 0) !== 0 &&
-                property.indexOf('source', 0) !== 0 &&
-                property.indexOf('style', 0) !== 0
-                ) {
-                layerConfig[property] = layer[property];
-            }
+          if (layer.hasOwnProperty(property) &&
+            // ignore props like source or those angular might add (starting with $)
+            // don't use startsWith as it is not supported in IE
+            property.indexOf('$', 0) !== 0 &&
+            property.indexOf('source', 0) !== 0 &&
+            property.indexOf('style', 0) !== 0
+            ) {
+            layerConfig[property] = layer[property];
+          }
         }
 
         layerConfig.source = oSource;
 
         // ol.layer.Layer configuration options
         if (isDefinedAndNotNull(layer.opacity)) {
-            layerConfig.opacity = layer.opacity;
+          layerConfig.opacity = layer.opacity;
         }
         if (isDefinedAndNotNull(layer.visible)) {
-            layerConfig.visible = layer.visible;
+          layerConfig.visible = layer.visible;
         }
         if (isDefinedAndNotNull(layer.extent)) {
-            layerConfig.extent = layer.extent;
+          layerConfig.extent = layer.extent;
         }
         if (isDefinedAndNotNull(layer.zIndex)) {
-            layerConfig.zIndex = layer.zIndex;
+          layerConfig.zIndex = layer.zIndex;
         }
         if (isDefinedAndNotNull(layer.minResolution)) {
-            layerConfig.minResolution = layer.minResolution;
+          layerConfig.minResolution = layer.minResolution;
         }
         if (isDefinedAndNotNull(layer.maxResolution)) {
-            layerConfig.maxResolution = layer.maxResolution;
+          layerConfig.maxResolution = layer.maxResolution;
         }
         if (isDefinedAndNotNull(layer.style) && type === 'TileVector') {
-            layerConfig.style = layer.style;
+          layerConfig.style = layer.style;
         }
 
         switch (type) {
-            case 'Image':
-                oLayer = new Image(layerConfig);
-                break;
-            case 'Tile':
-                oLayer = new Tile(layerConfig);
-                break;
-            case 'Heatmap':
-                oLayer = new Heatmap(layerConfig);
-                break;
-            case 'Vector':
-                oLayer = new Vector(layerConfig);
-                break;
-            case 'TileVector':
-                oLayer = new VectorTile(layerConfig);
-                break;
+          case 'Image':
+            oLayer = new Image(layerConfig);
+            break;
+          case 'Tile':
+            oLayer = new Tile(layerConfig);
+            break;
+          case 'Heatmap':
+            oLayer = new Heatmap(layerConfig);
+            break;
+          case 'Vector':
+            oLayer = new Vector(layerConfig);
+            break;
+          case 'TileVector':
+            oLayer = new VectorTile(layerConfig);
+            break;
         }
 
         // set a layer name if given
         if (isDefined(name)) {
-            oLayer.set('name', name);
+          oLayer.set('name', name);
         } else if (isDefined(layer.name)) {
-            oLayer.set('name', layer.name);
+          oLayer.set('name', layer.name);
         }
 
         // set custom layer properties if given
         if (layer.customAttributes) {
-            for (var key in layer.customAttributes) {
-                oLayer.set(key, layer.customAttributes[key]);
-            }
+          for (var key in layer.customAttributes) {
+            oLayer.set(key, layer.customAttributes[key]);
+          }
         }
 
         // invoke the onSourceCreated callback
         if (onLayerCreatedFn) {
-            onLayerCreatedFn({
-                oLayer: oLayer
-            });
+          onLayerCreatedFn({
+            oLayer: oLayer
+          });
         }
 
-        return oLayer;
+      return oLayer;
     },
     detectLayerType(layer) {
         if (layer.type) {
-            return layer.type;
+          return layer.type;
         } else {
             switch (layer.source.type) {
-                case 'ImageWMS':
-                    return 'Image';
-                case 'ImageStatic':
-                    return 'Image';
-                case 'GeoJSON':
-                case 'JSONP':
-                case 'TopoJSON':
-                case 'KML':
-                case 'WKT':
-                    return 'Vector';
-                case 'TileVector':
-                case 'MVT':
-                    return 'TileVector';
-                default:
-                    return 'Tile';
+              case 'ImageWMS':
+                return 'Image';
+              case 'ImageStatic':
+                return 'Image';
+              case 'GeoJSON':
+              case 'JSONP':
+              case 'TopoJSON':
+              case 'KML':
+              case 'WKT':
+                return 'Vector';
+              case 'TileVector':
+              case 'MVT':
+                return 'TileVector';
+              default:
+                return 'Tile';
             }
         }
     }

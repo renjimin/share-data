@@ -223,6 +223,16 @@ export default [
           '_views/manage/resourceMonitoring/accessStatistics/index.vue'
         )
       },
+      {
+        path:'/itemmanage',
+        name:'itemmanage',
+        meta:{
+          title:'条目管理',
+        },
+        component:() => import (
+          '_views/manage/itemManagement/item/index.vue'
+        )
+      },
     ]
   },
   {

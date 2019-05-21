@@ -24,6 +24,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
+import { useLogout } from '@/api/login/index'
 export default {
   data() {
     return {
@@ -62,7 +63,7 @@ export default {
     },
     // 退出登录
     async logout() {
-      await this.logoutAct();
+      await useLogout();
       this.$router.push("/login");
     },
     // 重置密码

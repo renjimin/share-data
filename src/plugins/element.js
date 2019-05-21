@@ -93,8 +93,9 @@ Vue.use(Main);
 Vue.use(Footer);
 Vue.use(Popover);
  //树
- Vue.use(Tree);
+Vue.use(Tree);
 
 
 Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$message = Message;
+Vue.prototype.$prompt = MessageBox.prompt

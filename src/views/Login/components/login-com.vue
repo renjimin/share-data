@@ -124,8 +124,8 @@ export default {
             let res =  await useLogin(parms);
             const { code, data } = res;
             if (code === '0') {
-              localStorage.setItem('userInfo',JSON.stringify(data))
-              this.$router.push("/dashboard");
+              console.log(this.$router)
+              this.$router.push("/home");
               this.$global.closeLoading();
             }
           } catch (error) {

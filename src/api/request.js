@@ -70,7 +70,7 @@ ajax.interceptors.response.use(response => {
       MessageBox.alert(errorMsg, '警告', {
         confirmButtonText: '确定',
         callback: () => {
-          router.push("/login");
+          router.push("/"); //登录页面
           flag = true;
         }
       });
