@@ -1,38 +1,49 @@
 <template>
   <div class="manage-tree">
-    <el-tree
-      :data="treedata"
-      :props="defaultProps"
-      show-checkbox
-      node-key="id"
-      default-expand-all
-      :expand-on-click-node="false"
-      :render-content="renderContent">
-    </el-tree>
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%"
-     >
-      <el-form  label-width="80px" :model="formLabelAlign">
-        <el-form-item label="栏目名称">
-          <el-input v-model="formLabelAlign.name"></el-input>
-        </el-form-item>
-        <el-form-item label="栏目别名">
-          <el-input v-model="formLabelAlign.aliasName"></el-input>
-        </el-form-item>
-        <el-form-item label="创建者">
-          <el-input v-model="formLabelAlign.createUser"></el-input>
-        </el-form-item>
-        <el-form-item label="更新者">
-          <el-input v-model="formLabelAlign.updateUser"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="subimtData">确 定</el-button>
-      </span>
-    </el-dialog>
+    <div>
+      <h2 class="table-name">栏目管理
+        <button class="blue_button" style="margin-top: -8px;" id="addBtn" @click="newItem">新增一级栏目</button>
+      </h2>
+    </div>
+    <div>
+      <el-tree
+        :data="treedata"
+        :props="defaultProps"
+        show-checkbox
+        node-key="id"
+        :expand-on-click-node="false"
+        :render-content="renderContent">
+      </el-tree>
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="30%"
+      >
+        <el-form  label-width="80px" :model="formLabelAlign">
+          <el-form-item label="栏目名称">
+            <el-input v-model="formLabelAlign.name"></el-input>
+          </el-form-item>
+          <el-form-item label="栏目别名">
+            <el-input v-model="formLabelAlign.aliasName"></el-input>
+          </el-form-item>
+          <el-form-item label="创建者">
+            <el-input v-model="formLabelAlign.createUser"></el-input>
+          </el-form-item>
+          <el-form-item label="更新者">
+            <el-input v-model="formLabelAlign.updateUser"></el-input>
+          </el-form-item>
+          <el-form-item label="数据类型" v-show="firstleve">
+            <el-select v-model="formLabelAlign.type" placeholder="请选择数据类型">
+              <el-option :label="item" :value="item" v-for="(item,index) in dataype" :key="index"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="subimtData">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -40,7 +51,7 @@
 <script>
 let id = 1000;
 import { getAllTree } from '@/api/index/index'
-import { insertItem, updateItem, deleteItem } from '@/api/manage/itemManage/index'
+import { insertCategory, updateCategory, deleteCategory } from '@/api/manage/itemManage/index'
 export default {
   data() {
     return {
@@ -49,6 +60,16 @@ export default {
         label: 'name'
       },
       dialogVisible:false,
+      firstleve:false,
+      dataype:[
+        'DynamicNodeGPS',
+        'DynamicNodeVideo',
+        'DynamicNodeFixed',
+        'WMTSNodeType',
+        'WMSNodeType',
+        'GovDataNode',
+        'DLGDataNode'
+      ],
       formLabelAlign:{},
       currentdata:'',
       currenttype:'',
@@ -62,6 +83,7 @@ export default {
     async initData() {
       let resall = await getAllTree();
       this.treedata =  this.treeData(resall.data);
+      console.log(this.treedata)
     },
     /**
      * 快速生成树形
@@ -104,6 +126,31 @@ export default {
       // }
       // data.children.push(newChild);
     },
+    async newItem() {
+      this.dialogVisible = true;
+      this.firstleve = true;
+      this.currenttype = 'addfirst';
+    },
+    async submitFirstLeve() {
+      let params = {
+        "aliasName": this.formLabelAlign.aliasName,
+        "createUser": this.formLabelAlign.createUser,
+        "name": this.formLabelAlign.name,
+        "parentId": '0',
+        "type": this.formLabelAlign.type,
+        "updateUser": this.formLabelAlign.updateUser
+      };
+      let res =  await insertCategory(params);
+      const { code } = res;
+      if (code === '0') {
+
+        // const newChild = { id: this.currentdata.id, name: this.formLabelAlign.name, children: [] };
+        // if (!this.currentdata.children) {
+        //   this.$set(this.currentdata, 'children', []);
+        // }
+        // data.children.push(newChild);
+      }
+    },
     async subimtData() {
       switch(this.currenttype) {
         case 'add':
@@ -112,9 +159,14 @@ export default {
         case 'edit':
           this.updatedata(this.currentdata);
           break;
+        case 'addfirst':
+          this.submitFirstLeve();
+          break;
         default:
           break;
       }
+      this.initData();
+      this.dialogVisible = false;
     },
     async appendItem(data){
       let params = {
@@ -126,7 +178,7 @@ export default {
         "type": data.type,
         "updateUser": this.formLabelAlign.updateUser
       }
-      let res =  await insertItem(params);
+      let res =  await insertCategory(params);
       const { code } = res;
       if (code === '0') {
         // const newChild = { id: this.currentdata.id, name: this.formLabelAlign.name, children: [] };
@@ -148,7 +200,7 @@ export default {
         "type": data.type,
         "updateUser": this.formLabelAlign.updateUser
       }
-      let res =  await updateItem(params);
+      let res =  await updateCategory(params);
       const { code } = res;
       if (code === '0') {
         // const newChild = { id: this.currentdata.id, name: this.formLabelAlign.name, children: [] };
@@ -164,7 +216,7 @@ export default {
         id:data.id,
         type:data.type
       }
-      let res =  await deleteItem(params);
+      let res =  await deleteCategory(params);
       const { code } = res;
       if ( code === '0' ) {
         const parent = node.parent;
@@ -212,7 +264,7 @@ export default {
 .manage-tree{
   .el-tree{
     width: 40%;
-    padding: 50px 0;
+    padding: 20px 0;
   }
 }
 

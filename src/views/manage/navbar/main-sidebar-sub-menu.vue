@@ -57,7 +57,7 @@ export default {
             "menuId":3,"name":"条目管理","url":null,"icon":"/images/manage/index/icon-权限申请.png",
             "list":[
               {"menuId":1,"name":"条目管理","url":"itemmanage"},
-              {"menuId":2,"name":"资源访问信息列表","url":"informationList"},
+              {"menuId":2,"name":"动态数据管理","url":"dynamicdatamangae"},
               {"menuId":3,"name":"资源访问统计","url":"accessStatistics"}
             ]
           }

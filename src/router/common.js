@@ -233,6 +233,16 @@ export default [
           '_views/manage/itemManagement/item/index.vue'
         )
       },
+      {
+        path:'/dynamicdatamangae',
+        name:'dynamicdatamangae',
+        meta:{
+          title:'动态数据管理',
+        },
+        component:() => import (
+          '_views/manage/itemManagement/item/dynamicData.vue'
+        )
+      },
     ]
   },
   {
