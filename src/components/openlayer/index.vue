@@ -8,7 +8,7 @@
 import "ol/ol.css";
 import Map from 'ol/Map'
 import View from 'ol/View'
-import {get as getProjection,Projection} from 'ol/proj';
+import {get as getProjection,Projection,transform} from 'ol/proj';
 import {defaults as defaultControls} from 'ol/control';
 import {defaults as defaultInteractions, DragAndDrop} from 'ol/interaction.js';
 import source from "ol/source";
@@ -25,6 +25,7 @@ import Image from 'ol/layer/Image'
 import Vector from 'ol/layer/Vector'
 import VectorTile from 'ol/layer/VectorTile'
 import Cluster from 'ol/source/Cluster'
+import Icon from 'ol/style/Icon'
 // import ServerVector from 'ol/source/ServerVector'
 // import MapQuest from 'ol/source/MapQuest'
 import TileImage from 'ol/source/TileImage'
@@ -106,7 +107,7 @@ export default {
   watch:{
     viewConfig: {
       handler(newValue, oldValue) {
-        this.createSource(newValue)
+        this.initMap(newValue)
       },
   　　 deep: true
     }
@@ -115,12 +116,92 @@ export default {
     this.initMap();
   },
   methods:{
-    initMap() {
+    initMap(source) {
+      let base64icon = 'data:image/png;base64,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';
+      let defaults ={
+        view: {
+            projection: 'EPSG:3857',
+            minZoom: undefined,
+            maxZoom: undefined,
+            rotation: 0,
+            extent: undefined
+        },
+        center: {
+            lat: 0,
+            lon: 0,
+            zoom: 1,
+            autodiscover: false,
+            bounds: [],
+            centerUrlHash: false,
+            projection: 'EPSG:4326'
+        },
+        styles: {
+            path: {
+                stroke: {
+                    color: 'blue',
+                    width: 8
+                }
+            },
+            marker: {
+                image: new Icon({
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 0.90,
+                    src: base64icon
+                })
+            }
+        },
+        events: {
+            map: [],
+            markers: [],
+            layers: []
+        },
+        controls: {
+            attribution: true,
+            rotate: false,
+            zoom: true
+        },
+        interactions: {
+            mouseWheelZoom: false
+        },
+        renderer: 'canvas'
+      };
+      debugger
       let controls = defaultControls(defaults.controls);
       let interactions = defaultInteractions(defaults.interactions);
-      let view = createView(defaults.view);
-      let map = new ol.Map({
-          target: element[0],
+      let view = this.createView(defaults.view);
+      let map = new Map({
+          target: 'map',
           controls: controls,
           interactions: interactions,
           renderer: defaults.renderer,
@@ -128,20 +209,21 @@ export default {
           loadTilesWhileAnimating: defaults.loadTilesWhileAnimating,
           loadTilesWhileInteracting: defaults.loadTilesWhileInteracting
       });
-      if (!attrs.customLayers) {
-          let l = {
-              type: 'Tile',
-              source: {
-                  type: 'OSM'
-              }
-          };
-          let layer = createLayer(l, view.getProjection(), 'default');
+      if (source) {
+          let layer = this.createLayer(source, view.getProjection(), 'default');
           map.addLayer(layer);
           map.set('default', true);
       }
+      // let c = transform([defaults.center.lon,
+      //         defaults.center.lat
+      //     ],
+      //     defaults.center.projection, view.getProjection()
+      // );
+      // view.setCenter(c);
+      // view.setZoom(defaults.center.zoom);
     },
     createView(view) {
-      let projection = createProjection(view);
+      let projection = this.createProjection(view);
 
       let viewConfig = {
         projection: projection,
@@ -185,81 +267,83 @@ export default {
       return oProjection;
     },
     createSource(sources, projection) {
-        let oSource;
-        let pixelRatio;
-        let url;
-        let source = sources[sources.type].source;
+      debugger
+      let oSource;
+      let pixelRatio;
+      let url;
+      let source = sources[sources.type].source;
 
-        switch (source.type) {
-          case 'ImageWMS':
-            if (!source.url || !source.params) {
-              return;
-            }
-            oSource = new ImageWMS({
-                url: source.url,
-                imageLoadFunction: source.imageLoadFunction,
-                attributions: this.createAttribution(source),
-                crossOrigin: (typeof source.crossOrigin === 'undefined') ? 'anonymous' : source.crossOrigin,
-                params: this.deepCopy(source.params),
-                ratio: source.ratio
-            });
-            break;
+      switch (source.type) {
+        case 'ImageWMS':
+          if (!source.url || !source.params) {
+            return;
+          }
+          oSource = new ImageWMS({
+            url: source.url,
+            imageLoadFunction: source.imageLoadFunction,
+            attributions: this.createAttribution(source),
+            crossOrigin: (typeof source.crossOrigin === 'undefined') ? 'anonymous' : source.crossOrigin,
+            params: this.deepCopy(source.params),
+            ratio: source.ratio
+          });
+          break;
 
-          case 'OSM':
-            oSource = new OSM({
-              tileLoadFunction: source.tileLoadFunction,
-              attributions: this.createAttribution(source),
-              wrapX: source.wrapX !== undefined ? source.wrapX : true
-            });
+        case 'OSM':
+          oSource = new OSM({
+            tileLoadFunction: source.tileLoadFunction,
+            attributions: this.createAttribution(source),
+            wrapX: source.wrapX !== undefined ? source.wrapX : true
+          });
 
-            if (source.url) {
-              oSource.setUrl(source.url);
-            }
+          if (source.url) {
+            oSource.setUrl(source.url);
+          }
 
-            break;
-          case 'TileArcGISRest':
-            if (!source.url) {
-              return;
-            }
-            oSource = new TileArcGISRest({
-              attributions: this.createAttribution(source),
-              tileLoadFunction: source.tileLoadFunction,
-              url: source.url,
-              wrapX: source.wrapX !== undefined ? source.wrapX : true
-            });
+          break;
+        case 'TileArcGISRest':
+          if (!source.url) {
+            return;
+          }
+          oSource = new TileArcGISRest({
+            attributions: this.createAttribution(source),
+            tileLoadFunction: source.tileLoadFunction,
+            url: source.url,
+            wrapX: source.wrapX !== undefined ? source.wrapX : true
+          });
 
-            break;
-          case 'XYZ':
-            if (!source.url && !source.tileUrlFunction) {
-              return;
-            }
-            oSource = new XYZ({
-              url: source.url,
-              attributions: this.createAttribution(source),
-              minZoom: source.minZoom,
-              maxZoom: source.maxZoom,
-              projection: source.projection,
-              tileUrlFunction: source.tileUrlFunction,
-              tileLoadFunction: source.tileLoadFunction,
-              wrapX: source.wrapX !== undefined ? source.wrapX : true
-            });
-            break;
-        }
+          break;
+        case 'XYZ':
+          if (!source.url && !source.tileUrlFunction) {
+            return;
+          }
+          oSource = new XYZ({
+            url: source.url,
+            attributions: this.createAttribution(source),
+            minZoom: source.minZoom,
+            maxZoom: source.maxZoom,
+            projection: source.projection,
+            tileUrlFunction: source.tileUrlFunction,
+            tileLoadFunction: source.tileLoadFunction,
+            wrapX: source.wrapX !== undefined ? source.wrapX : true
+          });
+          break;
+      }
 
-        if (!oSource) {
-          return;
-        }
-        this.map = new Map({
-            layers: [
-              oSource
-            ],
-            target: 'map',
-            view: new View({
-              projection: "EPSG:4326",    //使用这个坐标系
-              center: [111.8,32.4],  //深圳
-              zoom: 12
-            })
-        });
+      if (!oSource) {
+        return;
+      }
+      this.map = new Map({
+          layers: [
+            oSource
+          ],
+          target: 'map',
+          view: new View({
+            projection: "EPSG:4326",    //使用这个坐标系
+            center: [111.8,32.4],  //深圳
+            zoom: 12
+          })
+      });
+      return oSource;
     },
     deepCopy(oldObj) {
         let newObj = oldObj;
@@ -312,7 +396,7 @@ export default {
 
         let oLayer;
         let type = this.detectLayerType(layer);
-        let oSource = this.createSource(layer.source, projection);
+        let oSource = this.createSource(layer, projection);
         if (!oSource) {
             return;
         }
@@ -351,25 +435,25 @@ export default {
         layerConfig.source = oSource;
 
         // ol.layer.Layer configuration options
-        if (isDefinedAndNotNull(layer.opacity)) {
+        if (this.isDefinedAndNotNull(layer.opacity)) {
           layerConfig.opacity = layer.opacity;
         }
-        if (isDefinedAndNotNull(layer.visible)) {
+        if (this.isDefinedAndNotNull(layer.visible)) {
           layerConfig.visible = layer.visible;
         }
-        if (isDefinedAndNotNull(layer.extent)) {
+        if (this.isDefinedAndNotNull(layer.extent)) {
           layerConfig.extent = layer.extent;
         }
-        if (isDefinedAndNotNull(layer.zIndex)) {
+        if (this.isDefinedAndNotNull(layer.zIndex)) {
           layerConfig.zIndex = layer.zIndex;
         }
-        if (isDefinedAndNotNull(layer.minResolution)) {
+        if (this.isDefinedAndNotNull(layer.minResolution)) {
           layerConfig.minResolution = layer.minResolution;
         }
-        if (isDefinedAndNotNull(layer.maxResolution)) {
+        if (this.isDefinedAndNotNull(layer.maxResolution)) {
           layerConfig.maxResolution = layer.maxResolution;
         }
-        if (isDefinedAndNotNull(layer.style) && type === 'TileVector') {
+        if (this.isDefinedAndNotNull(layer.style) && type === 'TileVector') {
           layerConfig.style = layer.style;
         }
 
@@ -390,7 +474,9 @@ export default {
             oLayer = new VectorTile(layerConfig);
             break;
         }
-
+        if (!oLayer) {
+          return;
+        }
         // set a layer name if given
         if (!name) {
           oLayer.set('name', name);
@@ -414,11 +500,14 @@ export default {
 
       return oLayer;
     },
+    isDefinedAndNotNull(value) {
+      return value && value !== null;
+    },
     detectLayerType(layer) {
-      if (layer.type) {
-        return layer.type;
-      } else {
-        switch (layer.source.type) {
+      // if (layer[layer.type].source.type) {
+      //   return layer[layer.type].source.type;
+      // } else {
+        switch (layer[layer.type].source.type) {
           case 'ImageWMS':
             return 'Image';
           case 'ImageStatic':
@@ -434,7 +523,7 @@ export default {
             return 'TileVector';
           default:
             return 'Tile';
-        }
+        // }
       }
     }
   }

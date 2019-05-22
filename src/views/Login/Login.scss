@@ -1,7 +1,7 @@
 .login-page {
   position: relative;
   height: 100%;
-  background: url(../../assets/images/login-bg.jpg) center/cover;
+  // background: url(../../assets/images/login-bg.jpg) center/cover;
   canvas {
     display: block;
   }
@@ -14,10 +14,10 @@
       margin-right: 20px;
     }
   }
-  
+
   .login-container {
     position: absolute;
-    right: 160px;
+    left: 43%;
     top: 50%;
     transform: translateY(-60%);
     width: 310px;

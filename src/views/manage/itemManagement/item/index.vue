@@ -1,19 +1,46 @@
 <template>
-  <el-tree
-    :data="treedata"
-    :props="defaultProps"
-    show-checkbox
-    node-key="id"
-    default-expand-all
-    :expand-on-click-node="false"
-    :render-content="renderContent">
-  </el-tree>
+  <div class="manage-tree">
+    <el-tree
+      :data="treedata"
+      :props="defaultProps"
+      show-checkbox
+      node-key="id"
+      default-expand-all
+      :expand-on-click-node="false"
+      :render-content="renderContent">
+    </el-tree>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+     >
+      <el-form  label-width="80px" :model="formLabelAlign">
+        <el-form-item label="栏目名称">
+          <el-input v-model="formLabelAlign.name"></el-input>
+        </el-form-item>
+        <el-form-item label="栏目别名">
+          <el-input v-model="formLabelAlign.aliasName"></el-input>
+        </el-form-item>
+        <el-form-item label="创建者">
+          <el-input v-model="formLabelAlign.createUser"></el-input>
+        </el-form-item>
+        <el-form-item label="更新者">
+          <el-input v-model="formLabelAlign.updateUser"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="subimtData">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 
 <script>
 let id = 1000;
 import { getAllTree } from '@/api/index/index'
+import { insertItem, updateItem, deleteItem } from '@/api/manage/itemManage/index'
 export default {
   data() {
     return {
@@ -21,6 +48,10 @@ export default {
         children: 'children',
         label: 'name'
       },
+      dialogVisible:false,
+      formLabelAlign:{},
+      currentdata:'',
+      currenttype:'',
       treedata:''
     }
   },
@@ -48,36 +79,100 @@ export default {
       });
       return tree     //返回树形数据
     },
-    append(data) {
-      console.log(data)
-      this.$prompt('', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-      }).then(({ value }) => {
-        console.log(value)
-        const newChild = { id: id++, name: 'testtest', children: [] };
-        // if (!value.children) {
-        //   this.$set(value, 'children', []);
-        // }
-        this.treedata.children.push(value);
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        });
-      });
+    async handledata(data,type) {
+      this.dialogVisible = true;
+      this.currentdata = data;
+      this.currenttype = type;
+      // this.$prompt('', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      // }).then(({ value }) => {
+      //   const newChild = { id: id++, name: 'testtest', children: [] };
+      //   // if (!value.children) {
+      //   //   this.$set(value, 'children', []);
+      //   // }
+      //   this.treedata.children.push(value);
+      // }).catch(() => {
+      //   this.$message({
+      //     type: 'info',
+      //     message: '取消输入'
+      //   });
+      // });
       // const newChild = { id: id++, label: 'testtest', children: [] };
       // if (!data.children) {
       //   this.$set(data, 'children', []);
       // }
       // data.children.push(newChild);
     },
+    async subimtData() {
+      switch(this.currenttype) {
+        case 'add':
+          this.appendItem(this.currentdata);
+          break;
+        case 'edit':
+          this.updatedata(this.currentdata);
+          break;
+        default:
+          break;
+      }
+    },
+    async appendItem(data){
+      let params = {
+        "aliasName": this.formLabelAlign.aliasName,
+        "createUser": this.formLabelAlign.createUser,
+        "id": data.id,
+        "name": this.formLabelAlign.name,
+        "parentId": data.id,
+        "type": data.type,
+        "updateUser": this.formLabelAlign.updateUser
+      }
+      let res =  await insertItem(params);
+      const { code } = res;
+      if (code === '0') {
+        // const newChild = { id: this.currentdata.id, name: this.formLabelAlign.name, children: [] };
+        // if (!this.currentdata.children) {
+        //   this.$set(this.currentdata, 'children', []);
+        // }
+        // data.children.push(newChild);
+      }
+    },
+    async updatedata(data) {
+      console.log(data)
+      this.dialogVisible = true;
+      let params = {
+        "aliasName": this.formLabelAlign.aliasName,
+        "createUser": this.formLabelAlign.createUser,
+        "id": data.id,
+        "name": this.formLabelAlign.name,
+        "parentId": data.pId,
+        "type": data.type,
+        "updateUser": this.formLabelAlign.updateUser
+      }
+      let res =  await updateItem(params);
+      const { code } = res;
+      if (code === '0') {
+        // const newChild = { id: this.currentdata.id, name: this.formLabelAlign.name, children: [] };
+        // if (!this.currentdata.children) {
+        //   this.$set(this.currentdata, 'children', []);
+        // }
+        // data.children.push(newChild);
+      }
+    },
+    async remove(node, data) {
+      console.log(node,data)
+      let params = {
+        id:data.id,
+        type:data.type
+      }
+      let res =  await deleteItem(params);
+      const { code } = res;
+      if ( code === '0' ) {
+        const parent = node.parent;
+        const children = parent.data.children || parent.data;
+        const index = children.findIndex(d => d.id === data.id);
+        children.splice(index, 1);
+      }
 
-    remove(node, data) {
-      const parent = node.parent;
-      const children = parent.data.children || parent.data;
-      const index = children.findIndex(d => d.id === data.id);
-      children.splice(index, 1);
     },
 
     renderContent(h, { node, data, store }) {
@@ -87,12 +182,38 @@ export default {
             <span>{node.label}</span>
           </span>
           <span>
-            <el-button style="font-size: 12px;" type="text" on-click={ () => this.append(data) }>添加</el-button>
-            <el-button style="font-size: 12px;" type="text" on-click={ () => this.remove(node, data) }>编辑</el-button>
+            <el-button style="font-size: 12px;" type="text" on-click={ () => this.handledata(data,'add') }>添加</el-button>
+            <el-button style="font-size: 12px;" type="text" on-click={ () => this.handledata(data,'edit') }>编辑</el-button>
             <el-button style="font-size: 12px;" type="text" on-click={ () => this.remove(node, data) }>删除</el-button>
           </span>
         </span>);
+    },
+    itemManage() {
+      switch(item.type){
+        case 'DynamicNodeGPS':
+        case 'DynamicNodeVideo':
+        case 'DynamicNodeFixed': //动态数据类型
+          break;
+        case 'WMTSNodeType':
+        case 'WMSNodeType'://服务数据类型
+          break;
+        case 'GovDataNode'://栅格/影像数据类型
+          break;
+        case 'DLGDataNode': //矢量数据类型
+          break;
+        default:
+          break;
+      }
     }
   }
 };
 </script>
+<style lang="scss">
+.manage-tree{
+  .el-tree{
+    width: 40%;
+    padding: 50px 0;
+  }
+}
+
+</style>

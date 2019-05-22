@@ -8,7 +8,7 @@ export default {
   watch: {
     userInput: {
       handler() {
-        this.watchChanged()
+        // this.watchChanged()
       },
       immediate: true,
       deep: true

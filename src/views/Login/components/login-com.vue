@@ -5,12 +5,11 @@
       class="form-con"
       size="small"
       :model="formData"
-      :rules="rules"
       ref="ruleForm"
       @submit.native.prevent
     >
       <el-form-item prop="phone">
-        <el-input maxlength="11" v-model="formData.phone" clearable placeholder="请输入手机号">
+        <el-input maxlength="11" v-model="formData.phone" clearable placeholder="请输入用户名">
           <template slot="prepend">
             <i class="el-icon-z-mobile"></i>
           </template>
@@ -124,7 +123,6 @@ export default {
             let res =  await useLogin(parms);
             const { code, data } = res;
             if (code === '0') {
-              console.log(this.$router)
               this.$router.push("/home");
               this.$global.closeLoading();
             }
