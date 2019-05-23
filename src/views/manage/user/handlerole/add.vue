@@ -84,8 +84,6 @@ import { getAllTree } from '@/api/index/index'
       async initData() {
         let resall = await getAllTree();
         this.treedata =  this.treeData(resall.data);
-        console.log(this.treedata)
-        let params = 0;
       },
       /**
        * 快速生成树形

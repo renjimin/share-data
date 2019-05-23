@@ -2,10 +2,10 @@
   <div class="manage-content">
     <div>
       <h2 class="table-name">动态数据列表
-        <button class="blue_button" style="margin-top: -8px;" id="addBtn" @click="newUser">新增动态数据</button>
+        <button class="blue_button" style="margin-top: -8px;" id="addBtn" @click="newData">新增动态数据</button>
       </h2>
     </div>
-    <div>
+    <!-- <div>
       <el-row>
         <el-col :span="12">
           <el-form ref="form" :model="form" label-width="80px">
@@ -18,7 +18,7 @@
           <button class="blue_button" @click="query">查询</button>
         </el-col>
       </el-row>
-    </div>
+    </div> -->
     <div class="table-total">全部数据列表 ({{totalpage}})</div>
     <el-table
       :data="tableData"
@@ -46,8 +46,8 @@
         prop="address"
         label="操作">
         <template slot-scope="tableData">
-          <img src="/images/manage/index/e-Edit.png" @click="editUser(tableData)">
-          <img class="e-trash" src="/images/manage/index/e-Trash.png" @click="deleteUser(tableData)">
+          <img src="/images/manage/index/e-Edit.png" @click="editData(tableData.row)">
+          <img class="e-trash" src="/images/manage/index/e-Trash.png" @click="deletData(tableData.row)">
         </template>
       </el-table-column>
     </el-table>
@@ -65,23 +65,27 @@
       width="30%"
     >
       <el-form  label-width="80px" :model="formLabelAlign">
-        <el-form-item label="栏目名称">
+        <el-form-item label="名称">
           <el-input v-model="formLabelAlign.name"></el-input>
         </el-form-item>
-        <el-form-item label="栏目别名">
-          <el-input v-model="formLabelAlign.aliasName"></el-input>
+        <el-form-item label="别名">
+          <el-input v-model="formLabelAlign.aliasname"></el-input>
         </el-form-item>
-        <el-form-item label="创建者">
-          <el-input v-model="formLabelAlign.createUser"></el-input>
+        <el-form-item label="图层名称">
+          <el-input v-model="formLabelAlign.layerName"></el-input>
         </el-form-item>
-        <el-form-item label="更新者">
-          <el-input v-model="formLabelAlign.updateUser"></el-input>
+        <el-form-item label="创建时间">
+          <el-date-picker
+            v-model="formLabelAlign.createData"
+            type="datetime"
+            placeholder="选择日期时间">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="数据类型" v-show="firstleve">
+        <!-- <el-form-item label="数据类型" v-show="firstleve">
           <el-select v-model="formLabelAlign.type" placeholder="请选择数据类型">
             <el-option :label="item" :value="item" v-for="(item,index) in dataype" :key="index"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -94,7 +98,7 @@
 
 <script>
 import { categoryDetail } from '@/api/index/index'
-import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
+import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,insertRaster,updateRaster,insertService,updateService,insertVector,updateVector } from '@/api/manage/itemManage/index'
   export default {
     data() {
       return {
@@ -103,7 +107,8 @@ import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
         currentPage:1,
         pagesize:10,
         totalpage:0,
-        formLabelAlign:''
+        dialogVisible:false,
+        formLabelAlign:{}
       }
     },
     created() {
@@ -128,8 +133,8 @@ import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
       /**
        * 新增用户
        */
-      newUser() {
-        this.$router.push('/newuser')
+      newData() {
+
       },
       /**
        * 查询
@@ -140,22 +145,40 @@ import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
       /**
        * 编辑用户
        */
-      editUser(item) {
-        this.$router.push({name:'edituser',query:{userId:item.row.id,roleId:item.row.roleId,username:item.row.username,telephone:item.row.telephone,email:item.row.email}})
+      editData(item) {
+        this.dialogVisible = true;
+        console.log(item)
+        switch(item.type){
+          case 'DynamicNodeGPS':
+          case 'DynamicNodeVideo':
+          case 'DynamicNodeFixed': //动态数据类型
+            break;
+          case 'WMTSNodeType':
+          case 'WMSNodeType'://服务数据类型
+            break;
+          case 'GovDataNode'://栅格/影像数据类型
+            break;
+          case 'DLGDataNode': //矢量数据类型
+            break;
+          default:
+            break;
+        }
       },
       /**
        * 删除用户
        */
-      deleteUser(item) {
+      deleteData(item) {
+        console.log(item)
         this.$confirm('确认删除该条数据吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async () => {
           let data = {
-            userId:item.row.id
+            id:item.row.code,
+            type:item.row.type
           }
-          let res = await setDeleteUser(data);
+          let res = await deleteItem(data);
           const { code } = res;
           if (code === '0') {
             this.initData(1);
@@ -175,6 +198,9 @@ import { getUselist, setDeleteUser } from '@/api/manage/rolemanage/index'
             message: '已取消删除'
           });
         });
+      },
+      subimtData() {
+
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
