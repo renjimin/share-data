@@ -54,11 +54,10 @@ export default {
               ]
           },
           {
-            "menuId":3,"name":"条目管理","url":null,"icon":"/images/manage/index/icon-权限申请.png",
+            "menuId":4,"name":"资源管理","url":null,"icon":"/images/manage/index/icon-图层管理.png",
             "list":[
-              {"menuId":1,"name":"条目管理","url":"itemmanage"},
-              {"menuId":2,"name":"动态数据管理","url":"dynamicdatamangae"},
-              {"menuId":3,"name":"资源访问统计","url":"accessStatistics"}
+              {"menuId":1,"name":"栏目管理","url":"itemmanage"},
+              {"menuId":2,"name":"数据管理","url":"dynamicdatamangae"},
             ]
           }
         ]

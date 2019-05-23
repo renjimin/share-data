@@ -1,8 +1,8 @@
 <template>
   <div class="manage-content">
     <div>
-      <h2 class="table-name">动态数据列表
-        <button class="blue_button" style="margin-top: -8px;" id="addBtn" @click="newData">新增动态数据</button>
+      <h2 class="table-name">数据列表
+        <button class="blue_button" style="margin-top: -8px;" id="addBtn" @click="newData">新增数据</button>
       </h2>
     </div>
     <!-- <div>
@@ -147,7 +147,6 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
        */
       editData(item) {
         this.dialogVisible = true;
-        console.log(item)
         switch(item.type){
           case 'DynamicNodeGPS':
           case 'DynamicNodeVideo':
@@ -167,16 +166,15 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
       /**
        * 删除用户
        */
-      deleteData(item) {
-        console.log(item)
+      deletData(item) {
         this.$confirm('确认删除该条数据吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async () => {
           let data = {
-            id:item.row.code,
-            type:item.row.type
+            id:item.code,
+            type:item.type
           }
           let res = await deleteItem(data);
           const { code } = res;
