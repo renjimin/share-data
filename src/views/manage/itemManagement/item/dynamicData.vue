@@ -116,6 +116,7 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
         totalpage:0,
         dialogVisible:false,
         formLabelAlign:{},
+        currentselect:'',
         formitem:[
           {'label':'aliasname','moduledata':'aliasname'},
           {'label':'authorityCode','moduledata':'authorityCode'},
@@ -171,21 +172,7 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
        */
       editData(item) {
         this.dialogVisible = true;
-        switch(item.type){
-          case 'DynamicNodeGPS':
-          case 'DynamicNodeVideo':
-          case 'DynamicNodeFixed': //动态数据类型
-            break;
-          case 'WMTSNodeType':
-          case 'WMSNodeType'://服务数据类型
-            break;
-          case 'GovDataNode'://栅格/影像数据类型
-            break;
-          case 'DLGDataNode': //矢量数据类型
-            break;
-          default:
-            break;
-        }
+        this.currentselect = item;
       },
       /**
        * 删除用户
@@ -222,28 +209,99 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
         });
       },
       subimtData() {
-        console.log(this.formLabelAlign)
+        this.insertData();
       },
+
       async insertData() {
         let res = '';
-        switch(item.type){
+        let params = {
+          "aliasname": this.formLabelAlign.aliasname,
+          "authorityCode": this.formLabelAlign.authorityCode,
+          "conname": this.formLabelAlign.conname,
+          "createDate": this.formLabelAlign.createDate,
+          "create_user": this.formLabelAlign.create_user,
+          "dbtype": this.formLabelAlign.dbtype,
+          "instancename": this.formLabelAlign.instancename,
+          "layerType": this.formLabelAlign.layerType,
+          "name": this.formLabelAlign.name,
+          "parent_id": this.formLabelAlign.parent_id,
+          "password": this.formLabelAlign.password,
+          "port": this.formLabelAlign.port,
+          "server": this.formLabelAlign.server,
+          "tableName": this.formLabelAlign.tableName,
+          "type": this.formLabelAlign.type,
+          "updateDate": this.formLabelAlign.updateDate,
+          "update_user": this.formLabelAlign.update_user,
+          "user": this.formLabelAlign.user
+        }
+        switch(this.currentselect.type){
           case 'DynamicNodeGPS':
           case 'DynamicNodeVideo':
           case 'DynamicNodeFixed': //动态数据类型
-            res = await insertDynamic();
+            res = await insertDynamic(params);
             break;
           case 'WMTSNodeType':
           case 'WMSNodeType'://服务数据类型
-            res = await insertService();
+            res = await insertService(params);
             break;
-          case 'GovDataNode'://栅格/影像数据类型
-            res = await insertRaster();
+          case 'GovDataNode'://政务数据
+            res = await insertAtttable(params);
             break;
           case 'DLGDataNode': //矢量数据类型
-            res = await insertVector();
+            res = await insertVector(params);
             break;
           default:
             break;
+        }
+        const { code } = res;
+        if ( code === '0') {
+          this.initData();
+        }
+      },
+      async updateData() {
+        let res = '';
+        let params = {
+          "aliasname": this.formLabelAlign.aliasname,
+          "authorityCode": this.formLabelAlign.authorityCode,
+          "conname": this.formLabelAlign.conname,
+          "createDate": this.formLabelAlign.createDate,
+          "create_user": this.formLabelAlign.create_user,
+          "dbtype": this.formLabelAlign.dbtype,
+          "instancename": this.formLabelAlign.instancename,
+          "layerType": this.formLabelAlign.layerType,
+          "name": this.formLabelAlign.name,
+          "parent_id": this.formLabelAlign.parent_id,
+          "password": this.formLabelAlign.password,
+          "port": this.formLabelAlign.port,
+          "server": this.formLabelAlign.server,
+          "tableName": this.formLabelAlign.tableName,
+          "type": this.formLabelAlign.type,
+          "updateDate": this.formLabelAlign.updateDate,
+          "update_user": this.formLabelAlign.update_user,
+          "user": this.formLabelAlign.user
+        }
+        switch(this.currentselect.type){
+          case 'DynamicNodeGPS':
+          case 'DynamicNodeVideo':
+          case 'DynamicNodeFixed': //动态数据类型
+            res = await updateDynamic(params);
+            break;
+          case 'WMTSNodeType':
+          case 'WMSNodeType'://服务数据类型
+            res = await updateService(params);
+            break;
+          case 'GovDataNode'://政务数据
+            res = await updateAtttable(params);
+            break;
+          case 'DLGDataNode': //矢量数据类型
+            res = await updateVector(params);
+            break;
+          default:
+            break;
+        }
+        const { code } = res;
+        if ( code === '0') {
+          this.initData();
         }
       },
       handleSizeChange(val) {
