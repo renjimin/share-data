@@ -65,6 +65,11 @@
       width="70%"
     >
       <el-form  label-width="100px" :model="formLabelAlign" :inline='true'>
+        <el-form-item label="数据类型">
+          <el-select v-model="formLabelAlign.type" placeholder="请选择数据类型">
+            <el-option :label="item" :value="item" v-for="(item,index) in dataype" :key="index"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item :label="item.label" v-for="(item,index) in formitem" :key="index">
           <el-input v-model="formLabelAlign[item.moduledata]"></el-input>
         </el-form-item>
@@ -117,22 +122,23 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
         dialogVisible:false,
         formLabelAlign:{},
         currentselect:'',
+        currenttype:'',
         formitem:[
-          {'label':'aliasname','moduledata':'aliasname'},
+          {'label':'别名','moduledata':'aliasname'},
           {'label':'authorityCode','moduledata':'authorityCode'},
           {'label':'code','moduledata':'code'},
           {'label':'conname','moduledata':'conname'},
-          {'label':'create_user','moduledata':'create_user'},
-          {'label':'dbtype','moduledata':'dbtype'},
-          {'label':'instancename','moduledata':'instancename'},
-          {'label':'layerType','moduledata':'layerType'},
-          {'label':'name','moduledata':'name'},
-          {'label':'password','moduledata':'password'},
-          {'label':'server','moduledata':'server'},
-          {'label':'tableName','moduledata':'tableName'},
-          {'label':'type','moduledata':'type'},
-          {'label':'update_user','moduledata':'update_user'},
-          {'label':'user','moduledata':'user'},
+          {'label':'db类型','moduledata':'dbtype'},
+          {'label':'实例名','moduledata':'instancename'},
+          {'label':'图层类型','moduledata':'layerType'},
+          {'label':'名称','moduledata':'name'},
+          {'label':'密码','moduledata':'password'},
+          {'label':'服务','moduledata':'server'},
+          {'label':'表名','moduledata':'tableName'},
+          {'label':'类型','moduledata':'type'},
+          {'label':'创建者','moduledata':'create_user'},
+          {'label':'更新者','moduledata':'update_user'},
+          {'label':'使用者','moduledata':'user'},
         ]
       }
     },
@@ -159,7 +165,8 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
        * 新增用户
        */
       newData() {
-
+        this.dialogVisible = true;
+        this.currenttype = 'edit';
       },
       /**
        * 查询
@@ -173,6 +180,8 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
       editData(item) {
         this.dialogVisible = true;
         this.currentselect = item;
+        this.formLabelAlign = item;
+        this.currenttype = 'edit';
       },
       /**
        * 删除用户
@@ -209,7 +218,12 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
         });
       },
       subimtData() {
-        this.insertData();
+        if ( this.currenttype === 'edit') {
+          this.updateData();
+        }else{
+          this.insertData();
+        }
+
       },
 
       async insertData() {
