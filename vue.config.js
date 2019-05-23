@@ -21,6 +21,10 @@ module.exports = {
       .set('_api', resolve('src/api'))
       .set('_views', resolve('src/views'))
   },
+  chainWebpack: config => {
+    // 修复HMR
+    config.resolve.symlinks(true);
+  },
   devServer: {
     proxy: {
       '/api': {

@@ -62,17 +62,24 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="70%"
     >
-      <el-form  label-width="80px" :model="formLabelAlign">
-        <el-form-item label="名称">
-          <el-input v-model="formLabelAlign.name"></el-input>
+      <el-form  label-width="100px" :model="formLabelAlign" :inline='true'>
+        <el-form-item :label="item.label" v-for="(item,index) in formitem" :key="index">
+          <el-input v-model="formLabelAlign[item.moduledata]"></el-input>
         </el-form-item>
-        <el-form-item label="别名">
+        <!-- <el-form-item label="别名">
           <el-input v-model="formLabelAlign.aliasname"></el-input>
         </el-form-item>
         <el-form-item label="图层名称">
           <el-input v-model="formLabelAlign.layerName"></el-input>
+        </el-form-item> -->
+        <el-form-item label="更新时间">
+          <el-date-picker
+            v-model="formLabelAlign.updateDate"
+            type="datetime"
+            placeholder="选择日期时间">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
@@ -108,7 +115,24 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
         pagesize:10,
         totalpage:0,
         dialogVisible:false,
-        formLabelAlign:{}
+        formLabelAlign:{},
+        formitem:[
+          {'label':'aliasname','moduledata':'aliasname'},
+          {'label':'authorityCode','moduledata':'authorityCode'},
+          {'label':'code','moduledata':'code'},
+          {'label':'conname','moduledata':'conname'},
+          {'label':'create_user','moduledata':'create_user'},
+          {'label':'dbtype','moduledata':'dbtype'},
+          {'label':'instancename','moduledata':'instancename'},
+          {'label':'layerType','moduledata':'layerType'},
+          {'label':'name','moduledata':'name'},
+          {'label':'password','moduledata':'password'},
+          {'label':'server','moduledata':'server'},
+          {'label':'tableName','moduledata':'tableName'},
+          {'label':'type','moduledata':'type'},
+          {'label':'update_user','moduledata':'update_user'},
+          {'label':'user','moduledata':'user'},
+        ]
       }
     },
     created() {
@@ -198,7 +222,29 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
         });
       },
       subimtData() {
-
+        console.log(this.formLabelAlign)
+      },
+      async insertData() {
+        let res = '';
+        switch(item.type){
+          case 'DynamicNodeGPS':
+          case 'DynamicNodeVideo':
+          case 'DynamicNodeFixed': //动态数据类型
+            res = await insertDynamic();
+            break;
+          case 'WMTSNodeType':
+          case 'WMSNodeType'://服务数据类型
+            res = await insertService();
+            break;
+          case 'GovDataNode'://栅格/影像数据类型
+            res = await insertRaster();
+            break;
+          case 'DLGDataNode': //矢量数据类型
+            res = await insertVector();
+            break;
+          default:
+            break;
+        }
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
