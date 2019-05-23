@@ -1,5 +1,5 @@
 <template>
-  <div class="manage-content">
+  <div class="manage-datamanage">
     <div>
       <h2 class="table-name">数据列表
         <button class="blue_button" style="margin-top: -8px;" id="addBtn" @click="newData">新增数据</button>
@@ -62,12 +62,12 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="70%"
+      width="75%"
     >
       <el-form  label-width="100px" :model="formLabelAlign" :inline='true'>
         <el-form-item label="数据类型">
-          <el-select v-model="formLabelAlign.type" placeholder="请选择数据类型">
-            <el-option :label="item" :value="item" v-for="(item,index) in dataype" :key="index"></el-option>
+          <el-select v-model="formLabelAlign.type" filterable  placeholder="请选择数据类型">
+             <el-option :label="item" :value="item" v-for="(item,index) in dataype" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="item.label" v-for="(item,index) in formitem" :key="index">
@@ -123,6 +123,15 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
         formLabelAlign:{},
         currentselect:'',
         currenttype:'',
+        dataype:[
+          'DynamicNodeGPS',
+          'DynamicNodeVideo',
+          'DynamicNodeFixed',
+          'WMTSNodeType',
+          'WMSNodeType',
+          'GovDataNode',
+          'DLGDataNode'
+        ],
         formitem:[
           {'label':'别名','moduledata':'aliasname'},
           {'label':'authorityCode','moduledata':'authorityCode'},
@@ -166,7 +175,8 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
        */
       newData() {
         this.dialogVisible = true;
-        this.currenttype = 'edit';
+        this.currenttype = 'insert';
+        this.formLabelAlign = {};
       },
       /**
        * 查询
@@ -248,7 +258,7 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
           "update_user": this.formLabelAlign.update_user,
           "user": this.formLabelAlign.user
         }
-        switch(this.currentselect.type){
+        switch(this.formLabelAlign.type){
           case 'DynamicNodeGPS':
           case 'DynamicNodeVideo':
           case 'DynamicNodeFixed': //动态数据类型
@@ -331,7 +341,7 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
   }
 </script>
 <style lang="scss">
-.manage-content{
+.manage-datamanage{
   .table-name{
     color: #6e7073;
     font-size: 17px;
@@ -341,9 +351,14 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
     margin: 0;
   }
   .el-form{
-
-    .el-input{
-      width: auto;
+    .el-form-item{
+      .el-input{
+        width: auto;
+        .el-input__inner{
+          padding-left: 30px;
+          padding-right: 30px;
+        }
+      }
     }
   }
   .el-row{
