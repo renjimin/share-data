@@ -15,3 +15,8 @@ export function userRolelist(params) {
 export function categoryTree(params) {
   return request.post('/datashare/categoryTree',params)
 }
+
+// 获取用户下载数据
+export function monitorDowndata(params) {
+  return request.post('/datashare/b/monitor/downdata',params)
+}

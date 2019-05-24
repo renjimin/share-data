@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applicationfrom/index'
+import { monitorDowndata } from '@/api/manage/resourceMonitoring/index'
   export default {
     data() {
       return {
@@ -100,11 +100,11 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
         let data = {
           "pageSize":10,
           "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
+          "resourceCode":this.form.resourceCode,
+          "downTime":this.form.downTime,
+          "type":this.form.type,
         }
-        let res = await getUserRoleApplylist(data);
+        let res = await monitorDowndata(data);
         const { code, list, recordCount } = res;
         if (code === '0') {
           this.tableData = list;
