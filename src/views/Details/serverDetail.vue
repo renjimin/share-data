@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="6">
             <div>
-              <el-button>查看</el-button>
+              <el-button @click="toView">查看</el-button>
             </div>
             <div>
               <el-button @click="download">下载</el-button>
@@ -120,6 +120,9 @@ export default {
       renderTime(date) {
         let dateee = new Date(date).toJSON();
         return new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+      },
+      toView() {
+        this.$router.push({name:'vectorDetail',query:{}})
       },
       download(){
         this.dialogTableVisible = true;

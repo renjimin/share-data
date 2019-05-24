@@ -8,7 +8,7 @@
         <el-col :span="22">
           <el-form ref="form" :model="form" label-width="100px" :inline="true">
             <el-form-item label="用户名:">
-              <el-input v-model="form.name"></el-input>
+              <el-input v-model="form.userName"></el-input>
             </el-form-item>
             <el-form-item label="资源code:">
               <el-input v-model="form.resourceCode"></el-input>
@@ -100,6 +100,7 @@ import { monitorDowndata } from '@/api/manage/resourceMonitoring/index'
           "nowPage":page,
           "pageSize":this.pageSize,
           "resourceCode":this.form.resourceCode,
+          "userName":this.form.userName,
           "downTime":new Date(this.form.downTime).getTime(),
           "type":this.form.type,
         }

@@ -66,6 +66,13 @@ export default [
     ),
   },
   {
+    path: '/vectorDetail',
+    name: 'vectorDetail',
+    component: () => import(
+      '_views/Details/vectorDetail.vue'
+    ),
+  },
+  {
     path: '/manage',
     name: 'manage',
     redirect: { name: 'managehome' },

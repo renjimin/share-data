@@ -196,7 +196,7 @@ export default {
         },
         renderer: 'canvas'
       };
-      debugger
+
       let controls = defaultControls(defaults.controls);
       let interactions = defaultInteractions(defaults.interactions);
       let view = this.createView(defaults.view);
