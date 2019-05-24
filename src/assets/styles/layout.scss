@@ -67,32 +67,33 @@
     border-right: none;
     &>div>.el-menu-item {
       background: #00ACAC !important;
+      color: #FFFFFF !important;
     } // 子菜单的背景颜色
     .level-nav {
       .el-submenu__title{
         transition: all 0.3s;
         &:hover {
-          background-color: #00ACAC !important;
-          color: #FFFFFF !important;
+          background-color: #00ACAC ;
+          color: #FFFFFF ;
         } //   选中的背景颜色
       }
+      &.active {
+        background-color: #00ACAC ;
+        color: #FFFFFF ;
+        // .el-submenu__title{
+        //   color: #FFFFFF !important;
+        // }
+        .el-submenu__title{
+          color: #FFFFFF ;
+        }
+      }
+    }
+    .el-menu label .el-submenu__title{
+      color: #000000 !important;
     }
     .el-menu--inline label .el-submenu__title:hover{
       color: #00ACAC !important;
       background-color: #ECF1F9 !important;
-    }
-    .active {
-      background-color: #00ACAC !important;
-      color: #FFFFFF !important;
-      // .el-submenu__title:not(label){
-      //   color: #FFFFFF !important;
-      // }
-      // .is-opened{
-      //   .el-submenu__title:hover{
-      //     color: #00ACAC !important;
-      //     background-color: rgba(0,0,0,.2) !important;
-      //   }
-      // }
     }
     .el-menu-item,
     .el-submenu__title {

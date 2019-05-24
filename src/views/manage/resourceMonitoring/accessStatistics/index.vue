@@ -43,7 +43,7 @@
       <el-table-column
         prop="resourceCode"
         label="资源code"
-        width="180">
+        width="320">
       </el-table-column>
       <el-table-column
         prop="downTime"
