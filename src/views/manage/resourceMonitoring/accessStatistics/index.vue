@@ -10,11 +10,14 @@
             <el-form-item label="用户名:">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="申请起始时间:">
-              <el-date-picker type="date" placeholder="选择日期" v-model="form.startTime" style="width: 100%;"></el-date-picker>
+            <el-form-item label="资源code:">
+              <el-input v-model="form.resourceCode"></el-input>
             </el-form-item>
-            <el-form-item label="申请终止时间:">
-              <el-date-picker type="date" placeholder="选择日期" v-model="form.endTime" style="width: 100%;"></el-date-picker>
+            <el-form-item label="类型:">
+              <el-input v-model="form.type"></el-input>
+            </el-form-item>
+            <el-form-item label="下载时间:">
+              <el-date-picker type="date" placeholder="选择日期" v-model="form.downTime" style="width: 100%;"></el-date-picker>
             </el-form-item>
           </el-form>
         </el-col>
@@ -92,12 +95,12 @@ import { monitorDowndata } from '@/api/manage/resourceMonitoring/index'
       this.initData();
     },
     methods:{
-      async initData() {
+      async initData(page=1) {
         let params = {
-          "pageSize":10,
-          "nowPage":1,
+          "nowPage":page,
+          "pageSize":this.pageSize,
           "resourceCode":this.form.resourceCode,
-          "downTime":this.form.downTime,
+          "downTime":new Date(this.form.downTime).getTime(),
           "type":this.form.type,
         }
         let res = await monitorDowndata(params);
@@ -107,100 +110,14 @@ import { monitorDowndata } from '@/api/manage/resourceMonitoring/index'
           this.totalPage = recordCount
         }
       },
-      async query() {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalPage = recordCount
-        }
+      query() {
+        this.initData();
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
-      agreeApply() {
-        this.$confirm('确认同意该用户的权限申请吗?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          let data = {
-            id:item.row.id,
-            type:1
-          }
-          let res = await getUserRoleApplyEdit(data);
-          const { code } = res;
-          if (code === '0') {
-            this.initData();
-            this.$message({
-              type: 'success',
-              message: '审批成功!'
-            });
-          }else{
-            this.$message({
-              type: 'warning',
-              message: '审批失败!'
-            });
-          }
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });
-        });
-      },
-      rejectApply() {
-        this.$confirm('确认拒绝该用户的权限申请吗?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          let data = {
-            id:item.row.id,
-            type:1
-          }
-          let res = await getUserRoleApplyEdit(data);
-          const { code } = res;
-          if (code === '0') {
-            this.initData();
-            this.$message({
-              type: 'success',
-              message: '审批成功!'
-            });
-          }else{
-            this.$message({
-              type: 'warning',
-              message: '审批失败!'
-            });
-          }
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消!'
-          });
-        });
-      },
-      async handleCurrentChange(val) {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalPage = recordCount
-        }
+      handleCurrentChange(val) {
+        this.initData(val)
       }
     }
   }
