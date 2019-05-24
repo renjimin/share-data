@@ -34,34 +34,30 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="roleName"
-        label="角色"
+        prop="userId"
+        label="用户ID">
+      </el-table-column>
+      <el-table-column
+        prop="resourceCode"
+        label="资源code"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="status[status]"
-        label="状态">
+        prop="downTime"
+        label="下载时间">
       </el-table-column>
       <el-table-column
-        prop="applyTime"
-        label="申请时间">
+        prop="type"
+        label="类型">
       </el-table-column>
-      <el-table-column
-        prop="updateTime"
-        label="审批时间">
-      </el-table-column>
-      <el-table-column
-        prop="approverName"
-        label="审批人">
-      </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="address"
         label="操作">
         <template slot-scope="scope">
           <el-button @click="agreeApply(scope.row)" type="text" size="small">同意申请</el-button>
           <el-button type="text" size="small" @click="rejectApply(scope.row)">拒绝申请</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <el-pagination
       @size-change="handleSizeChange"
@@ -97,17 +93,17 @@ import { monitorDowndata } from '@/api/manage/resourceMonitoring/index'
     },
     methods:{
       async initData() {
-        let data = {
+        let params = {
           "pageSize":10,
           "nowPage":1,
           "resourceCode":this.form.resourceCode,
           "downTime":this.form.downTime,
           "type":this.form.type,
         }
-        let res = await monitorDowndata(data);
-        const { code, list, recordCount } = res;
+        let res = await monitorDowndata(params);
+        const { code, data, recordCount } = res;
         if (code === '0') {
-          this.tableData = list;
+          this.tableData = data;
           this.totalPage = recordCount
         }
       },
