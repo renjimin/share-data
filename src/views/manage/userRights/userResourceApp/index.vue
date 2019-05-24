@@ -14,8 +14,8 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="roleName"
-        label="角色"
+        prop="resourceName"
+        label="资源名称"
         width="180">
       </el-table-column>
       <el-table-column
@@ -28,11 +28,19 @@
       </el-table-column>
       <el-table-column
         prop="updateTime"
-        label="审批时间">
+        label="更新时间">
       </el-table-column>
       <el-table-column
-        prop="approverName"
-        label="审批人">
+        prop="deleteStatus"
+        label="删除状态">
+      </el-table-column>
+      <el-table-column
+        prop="editStatus"
+        label="编辑状态">
+      </el-table-column>
+      <el-table-column
+        prop="downStatus"
+        label="下载状态">
       </el-table-column>
     </el-table>
     <el-pagination
@@ -68,32 +76,20 @@ import { userResourceApplyList } from '@/api/manage/rolelist/index'
       this.initData();
     },
     methods:{
-      async initData() {
+      async initData(page=1) {
         let data = {
-          "nowPage":1,
+          "nowPage":page,
           "pageSize":this.pageSize,
         }
         let res = await userResourceApplyList(data);
-        const { code, list, recordCount } = res;
+        const { code, list, totalCount } = res;
         if (code === '0') {
           this.tableData = list;
-          this.totalPage = recordCount
+          this.totalPage = totalCount
         }
       },
-      async query() {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalPage = recordCount
-        }
+      query() {
+        this.initData();
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -160,20 +156,8 @@ import { userResourceApplyList } from '@/api/manage/rolelist/index'
           });
         });
       },
-      async handleCurrentChange(val) {
-        let data = {
-          "pageSize":10,
-          "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
-        }
-        let res = await getUserRoleApplylist(data);
-        const { code, list, recordCount } = res;
-        if (code === '0') {
-          this.tableData = list;
-          this.totalPage = recordCount
-        }
+      handleCurrentChange(val) {
+        this.initData(val);
       }
     }
   }

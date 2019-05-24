@@ -35,7 +35,7 @@ export default {
               {"menuId":2,"name":"角色列表","url":"rolelist"},
               {"menuId":3,"name":"申请单列表","url":"applicationlist"},
               // {"menuId":4,"name":"权限时间管理","url":"permissiontime"}
-              ]
+            ]
           },
           {
             "menuId":2,"name":"用户权限分配","url":null,"icon":"/images/manage/index/icon-地图配置.png",
@@ -43,8 +43,8 @@ export default {
               {"menuId":1,"name":"资源权限分配","url":"resourcePermissions"},
               {"menuId":2,"name":"资源权限审核","url":"permissionAudit"},
               {"menuId":3,"name":"资源权限列表","url":"resourcePermissionslist"},
-              {"menuId":2,"name":"用户资源申请","url":"userResourceapp"},
-              ]
+              {"menuId":4,"name":"用户资源申请","url":"userResourceapp"},
+            ]
           },
           {
             "menuId":3,"name":"资源监控","url":null,"icon":"/images/manage/index/icon-权限申请.png",
@@ -52,7 +52,7 @@ export default {
               {"menuId":1,"name":"资源访问控制列表","url":"controlList"},
               {"menuId":2,"name":"资源访问信息列表","url":"informationList"},
               {"menuId":3,"name":"资源访问统计","url":"accessStatistics"}
-              ]
+            ]
           },
           {
             "menuId":4,"name":"资源管理","url":null,"icon":"/images/manage/index/icon-图层管理.png",
