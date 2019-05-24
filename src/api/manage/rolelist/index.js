@@ -26,3 +26,8 @@ export function setDeleteRole(params) {
 export function currentRoleCategory(params) {
   return request.get('/datashare/b/role/rolecategory',{params})
 }
+
+// 获取用户申请资源列表
+export function userResourceApplyList(params) {
+  return request.post('/datashare/b/userResourceApply/listByUser',params)
+}

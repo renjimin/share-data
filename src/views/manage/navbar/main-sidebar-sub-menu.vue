@@ -43,7 +43,7 @@ export default {
               {"menuId":1,"name":"资源权限分配","url":"resourcePermissions"},
               {"menuId":2,"name":"资源权限审核","url":"permissionAudit"},
               {"menuId":3,"name":"资源权限列表","url":"resourcePermissionslist"},
-              {"menuId":2,"name":"用户资源申请","url":"permissionAudit"},
+              {"menuId":2,"name":"用户资源申请","url":"userResourceapp"},
               ]
           },
           {

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applicationfrom/index'
+import { userResourceApplyList } from '@/api/manage/rolelist/index'
   export default {
     data() {
       return {
@@ -70,13 +70,10 @@ import { getUserRoleApplylist, getUserRoleApplyEdit } from '@/api/manage/applica
     methods:{
       async initData() {
         let data = {
-          "pageSize":10,
           "nowPage":1,
-          "userName":this.form.name,
-          "startTime":this.form.startTime,
-          "endTime":this.form.endTime
+          "pageSize":this.pageSize,
         }
-        let res = await getUserRoleApplylist(data);
+        let res = await userResourceApplyList(data);
         const { code, list, recordCount } = res;
         if (code === '0') {
           this.tableData = list;

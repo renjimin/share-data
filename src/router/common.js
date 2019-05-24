@@ -201,6 +201,16 @@ export default [
         )
       },
       {
+        path:'/userResourceapp',
+        name:'userResourceapp',
+        meta:{
+          title:'用户资源申请',
+        },
+        component:() => import (
+          '_views/manage/userRights/userResourceApp/index.vue'
+        )
+      },
+      {
         path:'/controlList',
         name:'controlList',
         meta:{
