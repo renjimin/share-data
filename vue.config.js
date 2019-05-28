@@ -8,12 +8,11 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        data: `
-          @import "@/assets/styles/global.scss";
-        `
+        data: '\n          @import "@/assets/styles/global.scss";\n        '
       }
     }
   },
+
   chainWebpack: (config) => {
     config.resolve.alias
       .set('@', resolve('src'))
@@ -22,11 +21,14 @@ module.exports = {
       .set('_views', resolve('src/views'))
       config.resolve.symlinks(true);
   },
-  runtimeCompiler: true, // 是否使用包含运行时编译器的 Vue 构建版本
 
-  productionSourceMap: false, // 生产环境的 source map
+  // 是否使用包含运行时编译器的 Vue 构建版本
+  runtimeCompiler: undefined,
 
-  parallel: require('os').cpus().length > 1,
+  // 生产环境的 source map
+  productionSourceMap: undefined,
+
+  parallel: undefined,
 
   devServer: {
     proxy: {
@@ -39,7 +41,11 @@ module.exports = {
         }
       }
     }
-  }
+  },
+
+  publicPath: './',
+  outputDir: undefined,
+  assetsDir: undefined
 }
 
 // vue.config.js
