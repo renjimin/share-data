@@ -154,7 +154,7 @@
       }
     }
     .is-active{
-      background: #bd5795;
+      background: #4F93FE;
       color: #fff;
     }
   }

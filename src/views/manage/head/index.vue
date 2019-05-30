@@ -1,10 +1,10 @@
 <template>
   <div class="headerbar">
     <el-row type="flex">
-      <el-col :span="3">
+      <!-- <el-col :span="3">
         <img src="/images/manage/head/logo1.png">
-      </el-col>
-      <el-col :span="19">数据资源共享后台管理系统</el-col>
+      </el-col> -->
+      <el-col :span="21">&nbsp;</el-col>
       <el-col :span="3">
         <a @click="logout">
           <img src="/images/manage/head/icon-exit.png">
@@ -78,9 +78,9 @@ export default {
 </script>
 <style lang='scss' scoped>
 .headerbar{
-  height: 64px;
-  line-height: 64px;
-  background: url('/images/manage/head/top_bg.png');
+  height: 58px;
+  line-height: 58px;
+  background: url('/images/manage/head/top.png') no-repeat;
   .logout{
     padding: 5px;
   }
@@ -99,7 +99,7 @@ export default {
     }
     .el-col-3{
       text-align: right;
-      background: url('/images/manage/head/top_bg2.png') no-repeat;
+      // background: url('/images/manage/head/top_bg2.png') no-repeat;
       a{
         margin-right: 10px;
         color: #ffffff;

@@ -131,10 +131,11 @@ export default {
     padding: 26px;
     text-align: center;
     color: #fff;
-    background-color: #2C57AD;
+    background-color: #313643;
+    // background-image: linear-gradient( 0deg, rgb(56,77,237) 0%, rgb(5,137,245) 99%);
     font-size: 16px;
     font-weight: bold;
-    border-bottom: 1px solid #284e9b;
+    border-bottom: 1px solid #2c303C;
     p{
       margin-top: 5px;
     }
@@ -144,22 +145,23 @@ export default {
   }
   .el-menu{
     border: none;
-    background-color: #2C57AD;
+    background-color: #262A34;
     height: 100%;
     .el-submenu__title:hover{
-      background: #204692;
+      background: #4F93FE;
       color: #fff;
     }
     .el-menu-item:focus, .el-menu-item:hover {
-      background: #204692;
+      background: #4F93FE;
       color: #fff;
     }
   }
   .el-menu:not(.el-menu--inline) {
-    background-color: #2C57AD;
-    background-image: url('/images/manage/index/side_bg2.png');
-    background-repeat: no-repeat;
-    background-position: bottom 0 left 0;
+    background-color: #313643;
+    // background-image: linear-gradient( 0deg, rgb(56,77,237) 0%, rgb(5,137,245) 99%);
+    // background-image: url('/images/manage/index/side_bg2.png');
+    // background-repeat: no-repeat;
+    // background-position: bottom 0 left 0;
     width: 210px;
     min-height: 700px;
   }
