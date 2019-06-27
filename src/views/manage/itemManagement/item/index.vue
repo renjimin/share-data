@@ -1,7 +1,14 @@
 <template>
-  <div class="manage-tree">
+  <div class="manage-list">
     <div>
-      <h2 class="table-name">栏目管理
+      <h2 class="table-name">
+      <span>栏目管理</span>
+      <el-tabs v-model="activeName" class="manage-tree"  @tab-click="handleClick">
+        <el-tab-pane label="用户管理" name="first"></el-tab-pane>
+        <el-tab-pane label="配置管理" name="second"></el-tab-pane>
+        <el-tab-pane label="角色管理" name="third"></el-tab-pane>
+        <el-tab-pane label="定时任务补偿" name="fourth"></el-tab-pane>
+      </el-tabs>
         <button class="blue_button" style="margin-top: -8px;" id="addBtn" @click="newItem">新增一级栏目</button>
       </h2>
     </div>
@@ -12,7 +19,20 @@
         show-checkbox
         node-key="id"
         :expand-on-click-node="false"
-        :render-content="renderContent">
+        >
+        <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;" slot-scope="{node,data}">
+          <span>
+            <img style="padding:0 5px;" src="images/manage/index/icon_文件夹.png"/><span>{{node.label}}</span>
+          </span>
+          <!-- <span>
+            <img  src="images/manage/index/icon_文件夹.png"/><span>{{data}}</span>
+          </span>           -->
+          <span>
+            <img style="padding: 0 7px" src="images/manage/index/add.png" @click="handledata(data,'add')"/>
+            <img style="padding: 0 7px" src="images/manage/index/edit.png" @click="handledata(data,'edit')"/>
+            <img style="padding: 0 7px" src="images/manage/index/Trash.png" @click="remove(node, data)"/>
+          </span>
+        </span>
       </el-tree>
       <el-dialog
         title="提示"
@@ -71,6 +91,7 @@ export default {
         'DLGDataNode'
       ],
       formLabelAlign:{},
+      activeName:'second',
       currentdata:'',
       currenttype:'',
       treedata:''
@@ -101,30 +122,13 @@ export default {
       });
       return tree     //返回树形数据
     },
+    handleClick() {
+
+    },
     async handledata(data,type) {
       this.dialogVisible = true;
       this.currentdata = data;
       this.currenttype = type;
-      // this.$prompt('', '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      // }).then(({ value }) => {
-      //   const newChild = { id: id++, name: 'testtest', children: [] };
-      //   // if (!value.children) {
-      //   //   this.$set(value, 'children', []);
-      //   // }
-      //   this.treedata.children.push(value);
-      // }).catch(() => {
-      //   this.$message({
-      //     type: 'info',
-      //     message: '取消输入'
-      //   });
-      // });
-      // const newChild = { id: id++, label: 'testtest', children: [] };
-      // if (!data.children) {
-      //   this.$set(data, 'children', []);
-      // }
-      // data.children.push(newChild);
     },
     async newItem() {
       this.dialogVisible = true;
@@ -231,12 +235,12 @@ export default {
       return (
         <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
           <span>
-            <span>{node.label}</span>
+            <img  src="images/manage/index/icon_文件夹.png"/><span>{node.label}</span>
           </span>
           <span>
-            <el-button style="font-size: 12px;" type="text" on-click={ () => this.handledata(data,'add') }>添加</el-button>
-            <el-button style="font-size: 12px;" type="text" on-click={ () => this.handledata(data,'edit') }>编辑</el-button>
-            <el-button style="font-size: 12px;" type="text" on-click={ () => this.remove(node, data) }>删除</el-button>
+            <img style="padding: 0 7px" src="images/manage/index/add.png" on-click={ () => this.handledata(data,'add') }/>
+            <img style="padding: 0 7px" src="images/manage/index/edit.png" on-click={ () => this.handledata(data,'edit') }/>
+            <img style="padding: 0 7px" src="images/manage/index/Trash.png" on-click={ () => this.remove(node, data) }/>
           </span>
         </span>);
     },
@@ -261,9 +265,36 @@ export default {
 };
 </script>
 <style lang="scss">
-.manage-tree{
+.manage-list{
+  .table-name{
+    border-bottom: solid 1px #DBDBDB;
+    span{
+      margin-right: 20px;
+    }
+  }
+  .manage-tree{
+    display: inline-grid;
+    .el-tabs__item {
+      text-align: center;
+      padding: 0 20px !important;
+      margin-right: 0 !important;
+      height: 40px;
+      box-sizing: border-box;
+      line-height: 40px;
+      display: inline-block;
+      list-style: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: #303133 !important;
+      background: none !important;
+      position: relative;
+    }
+    .is-active{
+      color: #409eff !important;
+    }
+  }
   .el-tree{
-    width: 40%;
+    width: 50%;
     padding: 20px 0;
   }
 }

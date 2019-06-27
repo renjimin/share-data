@@ -3,7 +3,7 @@ import {baseDataURL} from '@/config/index'
 
 // 获取总数据
 export function getUselist(params) {
-  return request.post(`${baseDataURL}datashare/b/user/list`,params)
+  return request.post(`${baseDataURL}/datashare/b/user/list`,params)
 }
 
 // 获取角色
@@ -18,7 +18,7 @@ export function setUseadd(params) {
 
 // 编辑用户
 export function seteditUser(params) {
-  return request.get(`${baseDataURL}datashare/b/user/edit`,{params})
+  return request.get(`${baseDataURL}/datashare/b/user/edit`,{params})
 }
 
 // 删除用户

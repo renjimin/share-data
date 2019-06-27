@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <el-footer>CopyRight 2017-2019  湖北地信科技集团股份有限公司 版权所有</el-footer>
+    <el-footer>湖北地信科技集团股份有限公司 版权所有</el-footer>
   </div>
 </template>
 <script>

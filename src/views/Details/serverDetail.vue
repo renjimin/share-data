@@ -21,7 +21,7 @@
             <div class="des"><span>主题分类:{{detailinfo.subjectclass}}</span></div>
             <div class="des"><span>投影类型:{{detailinfo.shadowtype}}</span></div>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <div>
               <el-button @click="toView">查看</el-button>
             </div>
@@ -144,8 +144,11 @@ export default {
     margin: 0 2%;
     img{
       vertical-align: middle;
+      height: 100%;
+      width: 100%;
     }
     .el-col-7{
+      margin-left: 20px;
       .title{
         font-size: 24px;
         color: rgb(92, 101, 115);
@@ -158,7 +161,7 @@ export default {
         line-height: 2.667;
       }
     }
-    .el-col-6{
+    .el-col-5{
       div{
         margin-top: 1.5rem;
         button{

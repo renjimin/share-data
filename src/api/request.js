@@ -91,7 +91,7 @@ ajax.interceptors.response.use(response => {
     // 服务器没有响应
     console.log('server', errorMsg);
   }
-  showErrMsg(errorMsg)
+  // showErrMsg(errorMsg)
   return Promise.reject(errorMsg)
 });
 export default ajax;

@@ -374,6 +374,12 @@ import { deleteItem,insertAtttable,updateAtttable,insertDynamic,updateDynamic,in
   .e-trash{
     margin-left: 10px;
   }
+  .el-dialog__wrapper{
+    .el-dialog__header{
+      border-bottom: solid 1px #EFEFEE;
+      border-top: solid 5px #4E92FD;
+    }
+  }
 }
 </style>
 

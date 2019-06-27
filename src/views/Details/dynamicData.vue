@@ -37,6 +37,9 @@
           </el-row>
         </div>
       </div>
+      <div v-show='category == ""' class="no-data">
+        <span>暂无数据</span>
+      </div>
     </div>
   </div>
 </template>
@@ -186,6 +189,10 @@ export default {
     .dynamic-row:not(:first-of-type){
       border-top: 1px dashed rgb(228, 230, 234);
     }
+  }
+  .no-data{
+    padding: 50px;
+    text-align: center;
   }
 }
 </style>

@@ -3,6 +3,7 @@
     <!-- 主入口标签页 s -->
     <el-tabs
       v-model="mainTabsActiveName"
+      class="bread-tabs"
       :closable="true"
       @tab-click="selectedTabHandle"
       @tab-remove="removeTabHandle">
@@ -134,30 +135,33 @@
   margin-left: 230px;
   min-height: 100%;
   width: calc(100% - 250px);
-  .el-tabs__header{
-    .el-tabs__active-bar{
-      width: 0 !important;
-    }
-    .el-tabs__item {
-      border-radius: 4px;
-      background: #b3b9c7;
-      color: #fff;
-      height: 34px;
-      line-height: 34px;
-      border: none;
-      margin-right: 15px;
-      padding: 0 10px !important;
-    }
-    .el-tabs__item:first-child{
-      span{
-        display: none;
+  .bread-tabs{
+    .el-tabs__header{
+      .el-tabs__active-bar{
+        // width: 0 !important;
+      }
+      .el-tabs__item {
+        border-radius: 4px;
+        background: #b3b9c7;
+        color: #fff;
+        height: 34px;
+        line-height: 34px;
+        border: none;
+        margin-right: 15px;
+        padding: 0 10px;
+      }
+      .el-tabs__item:first-child{
+        span{
+          display: none;
+        }
+      }
+      .is-active{
+        background: #4F93FE;
+        color: #fff;
       }
     }
-    .is-active{
-      background: #4F93FE;
-      color: #fff;
-    }
   }
+
   .el-card{
     min-height: 775px;
     border-top: 3px solid #c387bc;
